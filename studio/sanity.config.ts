@@ -16,7 +16,8 @@ export default defineConfig({
   title: 'Origine Healing',
   projectId,
   dataset,
-  plugins: [structureTool({structure}), visionTool()],
+  // Vision runs GROQ queries by hand. Useful in `sanity dev`, noise in the Studio Stephanie sees.
+  plugins: [structureTool({structure}), ...(process.env.NODE_ENV === 'development' ? [visionTool()] : [])],
   schema: {
     types: schemaTypes,
     // Fixed pages and settings are created from the structure, never from the "new document" menu.
