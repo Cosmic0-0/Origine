@@ -1,0 +1,20 @@
+{
+  "name": "origine-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/sitemap": "^3.7.4",
+    "@portabletext/to-html": "^6.0.0",
+    "@sanity/client": "^8.6.2",
+    "astro": "^7.3.3",
+    "sharp": "^0.35.4",
+    "typescript": "^6.0.3"
+  }
+}

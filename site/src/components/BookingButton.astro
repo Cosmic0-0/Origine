@@ -1,0 +1,32 @@
+---
+/** The one place that turns a booking mode into a button. */
+import { getDictionary, l, localePath, fill, type Locale } from '@/i18n';
+import type { Booking, SiteSettings } from '@/lib/types';
+
+interface Props {
+  booking: Booking | undefined;
+  settings: SiteSettings;
+  locale: Locale;
+  name?: string | undefined;
+  price?: string | undefined;
+  slug?: string | undefined;
+  class?: string;
+}
+const { booking, settings, locale, name, price, slug, class: className = 'btn' } = Astro.props;
+const t = getDictionary(locale);
+const mode = booking?.mode ?? 'calendly';
+let href: string | undefined;
+let label = l(booking?.label, locale);
+if (mode === 'calendly') {
+  href = settings.calendlyUrl ?? localePath('/contact', locale);
+  label ??= price ? fill(t.cta.bookWithPrice, { price }) : t.cta.book;
+} else if (mode === 'enquire') {
+  href = `${localePath('/contact', locale)}${slug ? `?interest=${encodeURIComponent(slug)}` : ''}`;
+  label ??= name ? fill(t.cta.enquireAbout, { name }) : t.cta.enquire;
+} else if (mode === 'link' && booking?.url) {
+  href = booking.url;
+  label ??= t.cta.readMore;
+}
+const external = href ? /^https?:\/\//.test(href) : false;
+---
+{href && <a class={className} href={href} rel={external ? 'noopener' : undefined}>{label}</a>}

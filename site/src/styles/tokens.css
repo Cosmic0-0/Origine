@@ -1,0 +1,32 @@
+/* Brand tokens. The five colours are Stephanie's existing palette; everything else is derived from them. */
+:root {
+  --ink: #3f4a49;          /* deep slate teal, text */
+  --ink-deep: #485957;     /* darker teal, hover and dark bands */
+  --ink-soft: #56605f;     /* derived: secondary text, 4.6:1 on sand, 5.9:1 on the sky background */
+  --terracotta: #d3957c;   /* accent, shapes and rules only, never small text */
+  --terracotta-deep: #9a5535; /* derived: the terracotta that passes 4.5:1 for text on white and on the sky background */
+  --sand: #dcd9d0;         /* warm sand */
+  --sand-light: #efede8;   /* derived tint */
+  --paper: #ffffff;
+  --sky: #f5f3ef;          /* derived: page background, the colour of the beach sky in the photographs */
+  --blush: #efe6e1;        /* derived from the shawl */
+
+  /* --font-display and --font-body are defined by Astro's <Font> component in the page head. */
+
+  /* Type scale: body 17px, display steps up steeply. */
+  --text-sm: 0.875rem;
+  --text-base: 1.0625rem;
+  --text-md: 1.125rem;
+  --text-lg: clamp(1.375rem, 1.1rem + 1.2vw, 1.75rem);
+  --text-xl: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
+  --text-2xl: clamp(2rem, 1.4rem + 3vw, 3.25rem);
+  --text-3xl: clamp(2.75rem, 1.8rem + 5.5vw, 6rem);
+
+  --measure: 62ch;
+  --gutter: 1.25rem;
+  --wrap: 84rem;
+  --radius: 3px;
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+@media (min-width: 52rem) { :root { --gutter: 2.5rem; } }
+@media (min-width: 72rem) { :root { --gutter: 4rem; } }

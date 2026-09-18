@@ -1,0 +1,57 @@
+---
+import Base from '@/layouts/Base.astro';
+import Photo from '@/components/Photo.astro';
+import Prose from '@/components/Prose.astro';
+import { getDictionary, l, localePath, defaultLocale, type Locale } from '@/i18n';
+import { getAboutPage, getSettings, resolvePhoto } from '@/lib/content';
+import { abs } from '@/lib/seo';
+
+const locale: Locale = (Astro.currentLocale as Locale | undefined) ?? defaultLocale;
+const t = getDictionary(locale);
+const [about, settings] = await Promise.all([getAboutPage(), getSettings()]);
+const portrait = await resolvePhoto(about.portrait);
+const sections = await Promise.all((about.sections ?? []).map(async (s) => ({ ...s, photo: await resolvePhoto(s.image) })));
+const jsonLd = [{
+  '@context': 'https://schema.org', '@type': 'Person', name: settings.practitionerName ?? 'Stephanie Maurel', jobTitle: 'Embodied healing practitioner',
+  worksFor: { '@id': `${abs('/')}#business` }, url: abs('/about'), sameAs: [settings.instagramUrl, settings.facebookUrl, settings.youtubeUrl].filter(Boolean),
+  knowsAbout: (about.training ?? []).map((i) => l(i.label, locale)).filter(Boolean),
+}];
+---
+<Base title={`${t.nav.about} ${settings.practitionerName ?? ''}`.trim()} description={l(about.seo?.description, locale) ?? l(about.intro, locale)} locale={locale} jsonLd={jsonLd}>
+  <section class="wrap section-tight split about-hero">
+    <div>
+      <p class="eyebrow">{settings.practitionerName}</p>
+      <h1>{l(about.heading, locale)}</h1>
+      {l(about.intro, locale) && <p class="lede" style="margin-top:1.5rem">{l(about.intro, locale)}</p>}
+      {about.training && about.training.length > 0 && (
+        <ol class="training">{about.training.map((i) => <li class={i.highlight ? 'highlight' : ''}>{l(i.label, locale)}{l(i.detail, locale) && <span class="muted">, {l(i.detail, locale)}</span>}</li>)}</ol>
+      )}
+    </div>
+    <Photo photo={portrait} priority sizes="(min-width: 52rem) 40vw, 100vw" aspect="3/4" />
+  </section>
+
+  {sections.map((s, i) => (
+    <section class={`wrap section about-section ${s.photo ? 'split' : ''} ${s.photo && i % 2 ? 'split-reverse' : ''}`}>
+      {s.photo && i % 2 === 1 && <Photo photo={s.photo} sizes="(min-width: 52rem) 40vw, 100vw" aspect="4/5" />}
+      <div>
+        <h2>{l(s.heading, locale)}</h2>
+        <Prose blocks={l(s.body, locale)} class="about-body" />
+      </div>
+      {s.photo && i % 2 === 0 && <Photo photo={s.photo} sizes="(min-width: 52rem) 40vw, 100vw" aspect="4/5" />}
+    </section>
+  ))}
+
+  <section class="wrap section-tight">
+    <div class="actions" style="margin-top:0">
+      <a class="btn" href={localePath('/work-with-me', locale)}>{t.nav.work}</a>
+      <a class="quiet" href={localePath('/contact', locale)}>{t.cta.message}</a>
+    </div>
+  </section>
+</Base>
+<style>
+  .training { list-style: none; margin: 2rem 0 0; padding: 0; border-top: 1px solid var(--sand); max-width: 34rem; }
+  .training li { padding: 0.7rem 0; border-bottom: 1px solid var(--sand); font-size: 1rem; }
+  .training li.highlight { font-weight: 600; }
+  .about-section { padding-top: 0; }
+  .about-section :global(.about-body) { margin-top: 1.25rem; }
+</style>

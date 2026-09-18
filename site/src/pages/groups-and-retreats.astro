@@ -1,0 +1,51 @@
+---
+import Base from '@/layouts/Base.astro';
+import Offer from '@/components/Offer.astro';
+import EventList from '@/components/EventList.astro';
+import NewsletterForm from '@/components/NewsletterForm.astro';
+import Photo from '@/components/Photo.astro';
+import Prose from '@/components/Prose.astro';
+import { getDictionary, l, defaultLocale, type Locale } from '@/i18n';
+import { getPage, getSettings, getServices, getEvents, resolvePhoto, deref } from '@/lib/content';
+import { eventSchema } from '@/lib/seo';
+import type { Service } from '@/lib/types';
+
+const locale: Locale = (Astro.currentLocale as Locale | undefined) ?? defaultLocale;
+const t = getDictionary(locale);
+const [page, settings, services, events] = await Promise.all([getPage('groups'), getSettings(), getServices(), getEvents({ upcoming: true })]);
+const groupOffers = services.filter((s) => ['group', 'free', 'retreat', 'workshop'].includes(s.kind));
+const photos = await Promise.all(groupOffers.map((s) => resolvePhoto(s.image)));
+const jsonLd = await Promise.all(events.map(async (e) => { const o = await deref<Service>(e.offer); return eventSchema(e, locale, l(o?.title, locale), e.price?.amount != null ? e.price : o?.price); }));
+---
+<Base title={l(page.title, locale) ?? t.nav.groups} description={l(page.seo?.description, locale) ?? l(page.intro, locale)} locale={locale} jsonLd={jsonLd}>
+  <section class="wrap section-tight">
+    <h1>{l(page.title, locale)}</h1>
+    {l(page.intro, locale) && <p class="lede" style="margin-top:1.5rem">{l(page.intro, locale)}</p>}
+    <Prose blocks={l(page.body, locale)} />
+  </section>
+
+  <section class="wrap section-tight" id="dates">
+    <h2>{t.events.upcoming}</h2>
+    <div style="margin-top:1.5rem"><EventList events={events} settings={settings} locale={locale} /></div>
+  </section>
+
+  {groupOffers.map((s, i) => (
+    <section class={`wrap section split ${i % 2 ? 'split-reverse' : ''}`}>
+      {i % 2 === 0 ? (
+        <>
+          <Offer service={s} settings={settings} locale={locale} full />
+          <Photo photo={photos[i]} sizes="(min-width: 52rem) 40vw, 100vw" aspect="4/5" />
+        </>
+      ) : (
+        <>
+          <Photo photo={photos[i]} sizes="(min-width: 52rem) 40vw, 100vw" aspect="4/5" />
+          <Offer service={s} settings={settings} locale={locale} full />
+        </>
+      )}
+    </section>
+  ))}
+
+  <section class="band-sand section">
+    <div class="wrap"><NewsletterForm settings={settings} locale={locale} /></div>
+  </section>
+</Base>

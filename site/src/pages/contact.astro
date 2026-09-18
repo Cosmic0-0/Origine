@@ -1,0 +1,59 @@
+---
+import Base from '@/layouts/Base.astro';
+import EnquiryForm from '@/components/EnquiryForm.astro';
+import Prose from '@/components/Prose.astro';
+import { getDictionary, l, defaultLocale, type Locale } from '@/i18n';
+import { getPage, getSettings } from '@/lib/content';
+
+const locale: Locale = (Astro.currentLocale as Locale | undefined) ?? defaultLocale;
+const t = getDictionary(locale);
+const [page, settings] = await Promise.all([getPage('contact'), getSettings()]);
+const a = settings.address;
+const wa = settings.whatsapp ? `https://wa.me/${settings.whatsapp.replace(/\D/g, '')}` : undefined;
+---
+<Base title={l(page.title, locale) ?? t.nav.contact} description={l(page.seo?.description, locale) ?? l(page.intro, locale)} locale={locale}>
+  <section class="wrap section-tight split contact">
+    <div>
+      <h1>{l(page.title, locale)}</h1>
+      {l(page.intro, locale) && <p class="lede" style="margin-top:1.5rem">{l(page.intro, locale)}</p>}
+      <Prose blocks={l(page.body, locale)} />
+      <div style="margin-top:2.5rem"><EnquiryForm settings={settings} locale={locale} /></div>
+    </div>
+    <aside class="contact-aside">
+      <div class="contact-block">
+        <h2>{t.cta.book}</h2>
+        <p>Sessions are booked straight into my calendar.</p>
+        <a class="btn" href={settings.calendlyUrl ?? '#'}>{t.cta.book}</a>
+      </div>
+      <div class="contact-block">
+        <h2>Quickest</h2>
+        {wa && <p><a href={wa} rel="noopener">WhatsApp {settings.whatsapp}</a></p>}
+        {settings.email && <p><a href={`mailto:${settings.email}`}>{settings.email}</a></p>}
+        {l(settings.replyPromise, locale) && <p class="muted small">{l(settings.replyPromise, locale)}</p>}
+      </div>
+      {a && (
+        <div class="contact-block">
+          <h2>{t.footer.location}</h2>
+          <p>{a.venue}{a.street && <><br />{a.street}</>}<br />{[a.town, a.country].filter(Boolean).join(', ')}</p>
+          {a.mapUrl && <p><a class="quiet" href={a.mapUrl} rel="noopener">Open in Google Maps</a></p>}
+          {l(a.directions, locale) && <p class="muted small">{l(a.directions, locale)}</p>}
+        </div>
+      )}
+      <div class="contact-block">
+        <h2>{t.footer.follow}</h2>
+        <p>
+          {settings.instagramUrl && <a href={settings.instagramUrl} rel="noopener">Instagram</a>}{settings.instagramUrl && settings.facebookUrl && ' · '}
+          {settings.facebookUrl && <a href={settings.facebookUrl} rel="noopener">Facebook</a>}{settings.facebookUrl && settings.youtubeUrl && ' · '}
+          {settings.youtubeUrl && <a href={settings.youtubeUrl} rel="noopener">YouTube</a>}
+        </p>
+      </div>
+    </aside>
+  </section>
+</Base>
+<style>
+  .contact-aside { display: grid; gap: 2rem; align-content: start; }
+  @media (min-width: 52rem) { .contact-aside { padding-top: 1rem; } }
+  .contact-block h2 { font-size: var(--text-lg); font-variation-settings: 'opsz' 48; margin-bottom: 0.5rem; }
+  .contact-block p { margin-bottom: 0.5rem; }
+  .contact-block .btn { margin-top: 0.5rem; }
+</style>

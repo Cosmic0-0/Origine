@@ -1,0 +1,23 @@
+---
+import { Image } from 'astro:assets';
+import type { ResolvedPhoto } from '@/lib/content';
+
+interface Props {
+  photo: ResolvedPhoto | undefined;
+  sizes?: string;
+  class?: string;
+  priority?: boolean;
+  aspect?: string;
+}
+const { photo, sizes = '(min-width: 52rem) 50vw, 100vw', class: className = '', priority = false, aspect } = Astro.props;
+---
+{photo && typeof photo.src === 'string' && (
+  <Image src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} sizes={sizes} widths={[480, 768, 1080, 1440]}
+    loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : undefined} decoding="async" format="webp" quality={78}
+    class={`photo ${className}`} style={`object-position: ${photo.position};${aspect ? ` aspect-ratio: ${aspect};` : ''}`} />
+)}
+{photo && typeof photo.src !== 'string' && (
+  <Image src={photo.src} alt={photo.alt} sizes={sizes} widths={[480, 768, 1080, 1440]}
+    loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : undefined} decoding="async" format="webp" quality={78}
+    class={`photo ${className}`} style={`object-position: ${photo.position};${aspect ? ` aspect-ratio: ${aspect};` : ''}`} />
+)}

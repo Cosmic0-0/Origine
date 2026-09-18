@@ -1,0 +1,56 @@
+---
+import { getDictionary, l, fill, type Locale } from '@/i18n';
+import { formatEventDate, formatPrice, formatDuration } from '@/i18n/format';
+import type { Event, Service, SiteSettings } from '@/lib/types';
+import { deref } from '@/lib/content';
+import BookingButton from './BookingButton.astro';
+import Prose from './Prose.astro';
+
+interface Props { events: Event[]; settings: SiteSettings; locale: Locale; compact?: boolean }
+const { events, settings, locale, compact = false } = Astro.props;
+const t = getDictionary(locale);
+const rows = await Promise.all(events.map(async (e) => {
+  const offer = await deref<Service>(e.offer);
+  const price = e.price?.amount != null ? e.price : offer?.price;
+  return {
+    e, offer,
+    title: l(e.title, locale) ?? l(offer?.title, locale) ?? '',
+    when: formatEventDate(e.start, e.end, locale),
+    where: l(e.location, locale),
+    price: formatPrice(price?.amount, price?.currency, locale),
+    duration: formatDuration(offer?.durationMinutes?.min, offer?.durationMinutes?.max, locale),
+    booking: e.booking?.mode ? e.booking : offer?.booking,
+    spaces: e.soldOut ? t.events.soldOut : e.spaces === 1 ? t.events.oneSpace : e.spaces != null ? fill(t.events.spacesLeft, { n: e.spaces }) : undefined,
+  };
+}));
+---
+{rows.length === 0 ? (
+  <p class="muted measure">{t.events.none}</p>
+) : (
+  <ol class="events">
+    {rows.map((r) => (
+      <li class="event" id={r.e.slug.current}>
+        <div class="event-when">
+          <time datetime={r.e.start}>{r.when}</time>
+          {[r.where, r.duration].filter(Boolean).length > 0 && <span class="muted">{[r.where, r.duration].filter(Boolean).join(', ')}</span>}
+        </div>
+        <div class="event-body">
+          <h3>{r.title}</h3>
+          <p class="event-price">{r.price}{r.spaces && <span class="muted"> · {r.spaces}</span>}</p>
+          {!compact && <Prose blocks={l(r.e.description, locale)} />}
+          {!r.e.soldOut && <div class="actions" style="margin-top:1rem"><BookingButton booking={r.booking} settings={settings} locale={locale} name={r.title} slug={r.e.slug.current} /></div>}
+        </div>
+      </li>
+    ))}
+  </ol>
+)}
+<style>
+  .events { list-style: none; margin: 0; padding: 0; }
+  .event { display: grid; gap: 0.75rem; padding: 1.5rem 0; border-top: 1px solid var(--sand); }
+  .event:last-child { border-bottom: 1px solid var(--sand); }
+  .event-when { display: grid; gap: 0.15rem; font-size: var(--text-sm); }
+  .event-when time { font-family: var(--font-display); font-size: var(--text-lg); line-height: 1.2; font-variation-settings: 'opsz' 48; color: var(--ink); }
+  .event h3 { font-size: var(--text-lg); }
+  .event-price { margin-top: 0.35rem; font-weight: 500; }
+  @media (min-width: 52rem) { .event { grid-template-columns: 5fr 7fr; gap: 3rem; } }
+</style>

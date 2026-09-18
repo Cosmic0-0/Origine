@@ -1,0 +1,16 @@
+---
+import Base from '@/layouts/Base.astro';
+import { getDictionary, localePath, defaultLocale, type Locale } from '@/i18n';
+const locale: Locale = (Astro.currentLocale as Locale | undefined) ?? defaultLocale;
+const t = getDictionary(locale);
+---
+<Base title={t.notFound.heading} locale={locale} noindex>
+  <section class="wrap section">
+    <h1 style="max-width:12ch">{t.notFound.heading}</h1>
+    <p class="lede" style="margin-top:1.5rem">{t.notFound.body}</p>
+    <div class="actions">
+      <a class="btn" href={localePath('/', locale)}>{t.form.backHome}</a>
+      <a class="quiet" href={localePath('/contact', locale)}>{t.cta.message}</a>
+    </div>
+  </section>
+</Base>

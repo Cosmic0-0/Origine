@@ -1,0 +1,41 @@
+---
+import Base from '@/layouts/Base.astro';
+import Photo from '@/components/Photo.astro';
+import { getDictionary, l, localePath, defaultLocale, type Locale } from '@/i18n';
+import { formatDate } from '@/i18n/format';
+import { getPage, getPosts, resolvePhoto } from '@/lib/content';
+
+const locale: Locale = (Astro.currentLocale as Locale | undefined) ?? defaultLocale;
+const t = getDictionary(locale);
+const [page, posts] = await Promise.all([getPage('blog'), getPosts()]);
+const covers = await Promise.all(posts.map((p) => resolvePhoto(p.coverImage)));
+---
+<Base title={l(page.title, locale) ?? t.nav.blog} description={l(page.seo?.description, locale) ?? l(page.intro, locale)} locale={locale}>
+  <section class="wrap section-tight">
+    <h1>{l(page.title, locale)}</h1>
+    {l(page.intro, locale) && <p class="lede" style="margin-top:1.5rem">{l(page.intro, locale)}</p>}
+  </section>
+  <section class="wrap section-tight">
+    <ul class="posts">
+      {posts.map((p, i) => (
+        <li class="post-card">
+          <a href={localePath(`/blog/${p.slug.current}`, locale)} class="post-link">
+            <Photo photo={covers[i]} sizes="(min-width: 52rem) 33vw, 100vw" aspect="3/2" />
+            <h2>{l(p.title, locale)}</h2>
+          </a>
+          <p class="muted small"><time datetime={p.publishedAt}>{formatDate(p.publishedAt, locale)}</time></p>
+          <p>{l(p.excerpt, locale)}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
+<style>
+  .posts { list-style: none; margin: 0; padding: 0; display: grid; gap: 3rem 2.5rem; }
+  @media (min-width: 52rem) { .posts { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 72rem) { .posts { grid-template-columns: repeat(3, 1fr); } }
+  .post-link { text-decoration: none; display: grid; gap: 1rem; }
+  .post-link h2 { font-size: var(--text-xl); }
+  .post-link:hover h2 { text-decoration: underline; text-decoration-color: var(--terracotta); }
+  .post-card p { margin-top: 0.5rem; }
+</style>

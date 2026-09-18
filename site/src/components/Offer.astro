@@ -1,0 +1,56 @@
+---
+import { getDictionary, l, type Locale } from '@/i18n';
+import { formatPrice, formatDuration } from '@/i18n/format';
+import type { Service, SiteSettings, Modality } from '@/lib/types';
+import { derefAll } from '@/lib/content';
+import BookingButton from './BookingButton.astro';
+import Prose from './Prose.astro';
+
+interface Props { service: Service; settings: SiteSettings; locale: Locale; full?: boolean }
+const { service, settings, locale, full = false } = Astro.props;
+const t = getDictionary(locale);
+const name = l(service.title, locale) ?? '';
+const price = formatPrice(service.price?.amount, service.price?.currency, locale);
+const priceNote = l(service.price?.note, locale);
+const duration = formatDuration(service.durationMinutes?.min, service.durationMinutes?.max, locale);
+const frequency = l(service.frequency, locale);
+const where = service.where?.includes('inPerson') && service.where?.includes('online') ? t.offer.inPersonAndOnline : service.where?.includes('online') ? t.offer.online : service.where?.includes('inPerson') ? t.offer.inPerson : undefined;
+const meta = [duration, frequency, where].filter(Boolean).join(', ');
+const modalities = full ? await derefAll<Modality>(service.modalities) : [];
+const includes = (service.includes ?? []).map((i) => l(i, locale)).filter(Boolean) as string[];
+---
+<article class="offer" id={service.slug.current}>
+  <h2>{name}</h2>
+  <div class="offer-price">
+    {service.price?.amount === 0 ? <span class="amount">Free</span> : price ? <span class="amount">{price}</span> : <span class="amount amount-none">{priceNote ?? t.offer.notPublished}</span>}
+    {meta && <span class="meta">{meta}</span>}
+    {priceNote && price && <span class="meta">{priceNote}</span>}
+  </div>
+  {l(service.summary, locale) && <p class="offer-summary">{l(service.summary, locale)}</p>}
+  {full && <Prose blocks={l(service.body, locale)} />}
+  {full && includes.length > 0 && (
+    <div class="offer-includes">
+      <h3 class="eyebrow">{t.offer.includes}</h3>
+      <ul>{includes.map((i) => <li>{i}</li>)}</ul>
+    </div>
+  )}
+  {full && modalities.length > 0 && (
+    <p class="offer-modalities muted"><span>{t.offer.canInclude}: </span>{modalities.map((m, i) => <><a href={`/modalities/${m.slug.current}`}>{l(m.title, locale)}</a>{i < modalities.length - 1 ? ', ' : ''}</>)}</p>
+  )}
+  <div class="actions">
+    <BookingButton booking={service.booking} settings={settings} locale={locale} name={name} price={price} slug={service.slug.current} />
+    <slot name="secondary" />
+  </div>
+</article>
+<style>
+  .offer-price { margin-top: 0.75rem; display: grid; gap: 0.15rem; }
+  .amount { font-family: var(--font-display); font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.1; font-variation-settings: 'opsz' 144; }
+  .amount-none { font-size: var(--text-lg); }
+  .meta { font-size: var(--text-sm); color: var(--ink-soft); }
+  .offer-summary { margin-top: 1.25rem; max-width: 46ch; }
+  .offer-includes { margin-top: 1.5rem; }
+  .offer-includes ul { margin: 0; padding-left: 1.1rem; }
+  .offer-includes li { margin-bottom: 0.25rem; }
+  .offer-modalities { margin-top: 1.25rem; font-size: var(--text-sm); max-width: 52ch; }
+  .offer-modalities a { color: inherit; }
+</style>

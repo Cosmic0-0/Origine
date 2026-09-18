@@ -1,0 +1,9 @@
+---
+import { renderPortableText } from '@/lib/portableText';
+import type { PortableBlock } from '@/lib/types';
+
+interface Props { blocks: PortableBlock[] | null | undefined; class?: string }
+const { blocks, class: className = '' } = Astro.props;
+const html = await renderPortableText(blocks);
+---
+{html && <div class={`prose ${className}`} set:html={html} />}

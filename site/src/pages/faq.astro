@@ -1,0 +1,32 @@
+---
+import Base from '@/layouts/Base.astro';
+import FaqList from '@/components/FaqList.astro';
+import { getDictionary, l, localePath, defaultLocale, type Locale } from '@/i18n';
+import { getPage, getFaq, getSettings } from '@/lib/content';
+import { faqSchema } from '@/lib/seo';
+
+const locale: Locale = (Astro.currentLocale as Locale | undefined) ?? defaultLocale;
+const t = getDictionary(locale);
+const [page, entries, settings] = await Promise.all([getPage('faq'), getFaq(), getSettings()]);
+const topics = ['about', 'sessions', 'booking'] as const;
+const jsonLd = [faqSchema(entries, locale)];
+---
+<Base title={l(page.title, locale) ?? t.nav.faq} description={l(page.seo?.description, locale) ?? l(page.intro, locale)} locale={locale} jsonLd={jsonLd}>
+  <section class="wrap section-tight">
+    <h1>{l(page.title, locale)}</h1>
+    {l(page.intro, locale) && <p class="lede" style="margin-top:1.5rem">{l(page.intro, locale)}</p>}
+  </section>
+  <section class="wrap section-tight faq-page">
+    {topics.map((topic) => <FaqList entries={entries.filter((e) => (e.topic ?? 'about') === topic)} locale={locale} heading={t.faq.topics[topic]} />)}
+  </section>
+  <section class="wrap section-tight">
+    <div class="actions" style="margin-top:0">
+      <a class="btn" href={settings.calendlyUrl ?? localePath('/contact', locale)}>{t.cta.book}</a>
+      <a class="quiet" href={localePath('/contact', locale)}>{t.cta.message}</a>
+    </div>
+  </section>
+</Base>
+<style>
+  .faq-page { max-width: calc(48rem + 2 * var(--gutter)); margin-inline: 0; }
+  @media (min-width: 72rem) { .faq-page { margin-inline: auto; } }
+</style>

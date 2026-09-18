@@ -1,0 +1,50 @@
+---
+/** Netlify handles this form: no server, no JavaScript. The submission is emailed to Stephanie. */
+import { getDictionary, l, localePath, type Locale } from '@/i18n';
+import type { SiteSettings } from '@/lib/types';
+interface Props { settings: SiteSettings; locale: Locale }
+const { settings, locale } = Astro.props;
+const t = getDictionary(locale);
+const options = Object.entries(t.form.interestOptions);
+---
+<form class="enquiry" name="enquiry" method="post" action={localePath('/thank-you', locale)} data-netlify="true" netlify-honeypot="bot-field">
+  <input type="hidden" name="form-name" value="enquiry" />
+  <p class="sr-only" aria-hidden="true"><label>Leave this field empty <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+  <div class="field">
+    <label for="f-name">{t.form.name}</label>
+    <input id="f-name" name="name" type="text" required autocomplete="name" />
+  </div>
+  <div class="field">
+    <label for="f-email">{t.form.email}</label>
+    <input id="f-email" name="email" type="email" required autocomplete="email" />
+  </div>
+  <div class="field">
+    <label for="f-phone">{t.form.phone}</label>
+    <input id="f-phone" name="phone" type="tel" autocomplete="tel" />
+  </div>
+  <div class="field">
+    <label for="f-interest">{t.form.interest}</label>
+    <select id="f-interest" name="interest">
+      {options.map(([value, label]) => <option value={value}>{label}</option>)}
+    </select>
+  </div>
+  <div class="field">
+    <label for="f-message">{t.form.message}</label>
+    <textarea id="f-message" name="message" required></textarea>
+  </div>
+  <button class="btn" type="submit">{t.form.send}</button>
+  {l(settings.replyPromise, locale) && <p class="form-note" style="margin-top:1rem">{l(settings.replyPromise, locale)}</p>}
+</form>
+<script>
+  // Pre-select the interest when arriving from an "Enquire about…" button. Works without it too.
+  const interest = new URLSearchParams(location.search).get('interest');
+  const select = document.getElementById('f-interest') as HTMLSelectElement | null;
+  if (interest && select) {
+    const map: Record<string, string> = { 'three-month-programme': 'programme', 'single-session': 'session', 'moonlight-meditation': 'group', retreats: 'retreat' };
+    const value = map[interest] ?? (interest.startsWith('moonlight') ? 'group' : 'other');
+    if ([...select.options].some((o) => o.value === value)) select.value = value;
+  }
+</script>
+<style>
+  .enquiry { max-width: 32rem; }
+</style>

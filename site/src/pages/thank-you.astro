@@ -1,0 +1,18 @@
+---
+import Base from '@/layouts/Base.astro';
+import { getDictionary, localePath, defaultLocale, type Locale } from '@/i18n';
+import { getSettings } from '@/lib/content';
+const locale: Locale = (Astro.currentLocale as Locale | undefined) ?? defaultLocale;
+const t = getDictionary(locale);
+const settings = await getSettings();
+---
+<Base title={t.form.thanksHeading} locale={locale} noindex>
+  <section class="wrap section">
+    <h1 style="max-width:14ch">{t.form.thanksHeading}</h1>
+    <p class="lede" style="margin-top:1.5rem">{t.form.thanksBody}</p>
+    <div class="actions">
+      <a class="btn" href={localePath('/', locale)}>{t.form.backHome}</a>
+      {settings.whatsapp && <a class="quiet" href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`} rel="noopener">{t.cta.whatsapp}</a>}
+    </div>
+  </section>
+</Base>

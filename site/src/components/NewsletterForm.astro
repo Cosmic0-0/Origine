@@ -1,0 +1,35 @@
+---
+import { getDictionary, type Locale } from '@/i18n';
+import type { SiteSettings } from '@/lib/types';
+interface Props { settings: SiteSettings; locale: Locale }
+const { settings, locale } = Astro.props;
+const t = getDictionary(locale);
+const action = settings.newsletterFormUrl;
+---
+<section class="newsletter" id="newsletter">
+  <h2>{t.newsletter.heading}</h2>
+  <p class="measure">{t.newsletter.body}</p>
+  {action ? (
+    <form class="newsletter-form" action={action} method="post" data-uid={settings.newsletterFormUid}>
+      <div class="field">
+        <label for="nl-first">{t.newsletter.firstNameLabel}</label>
+        <input id="nl-first" type="text" name="fields[first_name]" autocomplete="given-name" />
+      </div>
+      <div class="field">
+        <label for="nl-email">{t.newsletter.emailLabel}</label>
+        <input id="nl-email" type="email" name="email_address" required autocomplete="email" />
+      </div>
+      <button class="btn" type="submit">{t.newsletter.button}</button>
+      <p class="form-note">{t.newsletter.privacy}</p>
+    </form>
+  ) : (
+    <p class="form-note">The sign-up form appears here once the newsletter address is added in the site settings.</p>
+  )}
+</section>
+<style>
+  .newsletter h2 { font-size: var(--text-xl); }
+  .newsletter p { margin-top: 0.75rem; }
+  .newsletter-form { margin-top: 1.5rem; display: grid; gap: 0.5rem; max-width: 28rem; }
+  .newsletter-form .field { margin-bottom: 0.5rem; }
+  .newsletter-form .btn { justify-self: start; margin-top: 0.5rem; }
+</style>

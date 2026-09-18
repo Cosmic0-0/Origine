@@ -1,0 +1,68 @@
+---
+import Base from '@/layouts/Base.astro';
+import Offer from '@/components/Offer.astro';
+import Photo from '@/components/Photo.astro';
+import Prose from '@/components/Prose.astro';
+import { getDictionary, l, localePath, defaultLocale, type Locale } from '@/i18n';
+import { getPage, getSettings, getServices, getModalities, resolvePhoto } from '@/lib/content';
+import { serviceSchema } from '@/lib/seo';
+
+const locale: Locale = (Astro.currentLocale as Locale | undefined) ?? defaultLocale;
+const t = getDictionary(locale);
+const [page, settings, services, modalities] = await Promise.all([getPage('work'), getSettings(), getServices(), getModalities()]);
+const main = services.filter((s) => s.kind === 'session' || s.kind === 'programme');
+const photos = await Promise.all(main.map((s) => resolvePhoto(s.image)));
+const jsonLd = main.map((s) => serviceSchema(s, locale));
+---
+<Base title={l(page.title, locale) ?? t.nav.work} description={l(page.seo?.description, locale) ?? l(page.intro, locale)} locale={locale} jsonLd={jsonLd}>
+  <section class="wrap section-tight">
+    <h1>{l(page.title, locale)}</h1>
+    {l(page.intro, locale) && <p class="lede" style="margin-top:1.5rem">{l(page.intro, locale)}</p>}
+    <Prose blocks={l(page.body, locale)} />
+  </section>
+
+  {main.map((s, i) => (
+    <section class={`wrap section split ${i % 2 ? 'split-reverse' : ''}`}>
+      {i % 2 === 0 ? (
+        <>
+          <Offer service={s} settings={settings} locale={locale} full />
+          <Photo photo={photos[i]} sizes="(min-width: 52rem) 40vw, 100vw" aspect="3/4" />
+        </>
+      ) : (
+        <>
+          <Photo photo={photos[i]} sizes="(min-width: 52rem) 40vw, 100vw" aspect="3/4" />
+          <Offer service={s} settings={settings} locale={locale} full />
+        </>
+      )}
+    </section>
+  ))}
+
+  <section class="band-sand section">
+    <div class="wrap">
+      <h2>{t.home.ingredientsHeading}</h2>
+      <p class="measure" style="margin-top:1rem">{t.home.ingredientsNote}</p>
+      <ul class="modality-list">
+        {modalities.map((m) => (
+          <li>
+            <h3><a href={localePath(`/modalities/${m.slug.current}`, locale)}>{l(m.title, locale)}</a></h3>
+            <p>{l(m.summary, locale)}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {l(settings.cancellationPolicy, locale) && (
+    <section class="wrap section-tight">
+      <p class="measure muted"><strong>Cancellations.</strong> {l(settings.cancellationPolicy, locale)}</p>
+    </section>
+  )}
+</Base>
+<style>
+  .modality-list { list-style: none; margin: 2.5rem 0 0; padding: 0; display: grid; gap: 1.75rem 3rem; }
+  @media (min-width: 52rem) { .modality-list { grid-template-columns: repeat(3, 1fr); } }
+  .modality-list h3 { font-size: var(--text-lg); font-variation-settings: 'opsz' 48; }
+  .modality-list h3 a { text-decoration: none; }
+  .modality-list h3 a:hover { text-decoration: underline; text-decoration-color: var(--terracotta); }
+  .modality-list p { margin-top: 0.5rem; font-size: 1rem; }
+</style>

@@ -1,0 +1,52 @@
+---
+import Base from '@/layouts/Base.astro';
+import Photo from '@/components/Photo.astro';
+import Prose from '@/components/Prose.astro';
+import { getDictionary, l, localePath, fill, defaultLocale, type Locale } from '@/i18n';
+import { formatDate } from '@/i18n/format';
+import { getPosts, getSettings, deref, resolvePhoto } from '@/lib/content';
+import { postSchema, imageUrl } from '@/lib/seo';
+import type { Modality } from '@/lib/types';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((p) => ({ params: { slug: p.slug.current }, props: { post: p } }));
+}
+const { post } = Astro.props;
+const locale: Locale = (Astro.currentLocale as Locale | undefined) ?? defaultLocale;
+const t = getDictionary(locale);
+const settings = await getSettings();
+const cover = await resolvePhoto(post.coverImage);
+const modality = await deref<Modality>(post.relatedModality);
+const title = l(post.title, locale) ?? '';
+const author = settings.practitionerName ?? 'Stephanie Maurel';
+const jsonLd = [await postSchema(post, locale, author)];
+---
+<Base title={fill(t.meta.postTitle, { title })} description={l(post.seo?.description, locale) ?? l(post.excerpt, locale)} image={await imageUrl(post.coverImage)} locale={locale} jsonLd={jsonLd}>
+  <article class="wrap section-tight post">
+    <p class="eyebrow"><a href={localePath('/blog', locale)} style="text-decoration:none">{t.nav.blog}</a></p>
+    <h1>{title}</h1>
+    <p class="muted" style="margin-top:1rem"><time datetime={post.publishedAt}>{formatDate(post.publishedAt, locale)}</time> · {t.blog.by} {author}</p>
+    <Photo photo={cover} priority sizes="(min-width: 52rem) 42rem, 100vw" class="post-cover" aspect="3/2" />
+    <Prose blocks={l(post.body, locale)} class="post-body" />
+    {modality && (
+      <aside class="post-related">
+        <p class="eyebrow">{t.blog.related}</p>
+        <h2>{l(modality.title, locale)}</h2>
+        <p class="measure">{l(modality.summary, locale)}</p>
+        <div class="actions">
+          <a class="btn" href={settings.calendlyUrl ?? localePath('/contact', locale)}>{t.cta.book}</a>
+          <a class="quiet" href={localePath(`/modalities/${modality.slug.current}`, locale)}>{fill(t.cta.aboutName, { name: l(modality.title, locale) ?? '' })}</a>
+        </div>
+      </aside>
+    )}
+  </article>
+</Base>
+<style>
+  .post { max-width: calc(var(--measure) + 2 * var(--gutter)); }
+  .post :global(.post-cover) { margin-top: 2rem; }
+  .post :global(.post-body) { margin-top: 2.5rem; }
+  .post-related { margin-top: 4rem; padding: 2rem; background: var(--sand-light); }
+  .post-related h2 { font-size: var(--text-xl); }
+  .post-related p { margin-top: 0.75rem; }
+</style>

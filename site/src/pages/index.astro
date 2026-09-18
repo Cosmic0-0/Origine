@@ -1,0 +1,140 @@
+---
+import Base from '@/layouts/Base.astro';
+import Photo from '@/components/Photo.astro';
+import Prose from '@/components/Prose.astro';
+import Offer from '@/components/Offer.astro';
+import Testimonial from '@/components/Testimonial.astro';
+import EventList from '@/components/EventList.astro';
+import { getDictionary, l, localePath, fill, defaultLocale, type Locale } from '@/i18n';
+import { formatPrice } from '@/i18n/format';
+import { getHomePage, getAboutPage, getSettings, getServices, getModalities, getTestimonials, getEvents, resolvePhoto } from '@/lib/content';
+import { localBusiness, serviceSchema } from '@/lib/seo';
+
+const locale: Locale = (Astro.currentLocale as Locale | undefined) ?? defaultLocale;
+const t = getDictionary(locale);
+const [home, about, settings, services, modalities, testimonials, events] = await Promise.all([
+  getHomePage(), getAboutPage(), getSettings(), getServices(), getModalities(), getTestimonials(), getEvents({ upcoming: true }),
+]);
+const featured = services.filter((s) => s.showOnHome);
+const single = services.find((s) => s.kind === 'session');
+const singlePrice = formatPrice(single?.price?.amount, single?.price?.currency, locale);
+const quotes = testimonials.filter((q) => q.featured).slice(0, 2);
+const moonlight = services.find((s) => s.slug.current === 'moonlight-meditation');
+const nextGroup = events.filter((e) => e.offer?._ref === moonlight?._id).slice(0, 1);
+const hero = await resolvePhoto(home.heroImage);
+const who = await resolvePhoto(home.whoImage);
+const jsonLd = [await localBusiness(settings, locale), ...featured.map((s) => serviceSchema(s, locale))];
+---
+<Base title={t.meta.homeTitle} description={l(home.heroLede, locale)} locale={locale} jsonLd={jsonLd} bodyClass="page-home">
+  <section class="hero wrap">
+    <div class="hero-text rise">
+      <h1>{l(home.heroHeading, locale)}</h1>
+      <p class="lede">{l(home.heroLede, locale)}</p>
+      <div class="actions">
+        <a class="btn" href={settings.calendlyUrl ?? localePath('/contact', locale)}>{singlePrice ? fill(t.cta.bookWithPrice, { price: singlePrice }) : t.cta.book}</a>
+        <a class="quiet" href="#offers">{t.cta.programme}</a>
+      </div>
+      {l(home.credentialsLine, locale) && <p class="credentials"><strong>{settings.practitionerName}</strong>{l(home.credentialsLine, locale)}</p>}
+    </div>
+    <Photo photo={hero} class="hero-photo rise rise-late" priority sizes="(min-width: 52rem) 40vw, 100vw" />
+  </section>
+
+  <section class="statement wrap section">
+    <p class="statement-text">{l(home.statement, locale)}</p>
+    {l(home.originMeaning, locale) && <p class="measure muted">{l(home.originMeaning, locale)}</p>}
+  </section>
+
+  <section class="band-paper section" id="offers">
+    <div class="wrap">
+      <h2 class="sr-only">{t.home.offersHeading}</h2>
+      <div class="offers-grid">
+        {featured.map((s) => <Offer service={s} settings={settings} locale={locale} />)}
+      </div>
+      <div class="ingredients">
+        <p class="eyebrow">{t.home.ingredientsHeading}. {t.home.ingredientsNote}</p>
+        <ul class="ingredient-list">{modalities.map((m) => <li><a href={localePath(`/modalities/${m.slug.current}`, locale)}>{l(m.title, locale)}</a></li>)}</ul>
+        <p style="margin-top:1.25rem"><a class="quiet" href={localePath('/work-with-me', locale)}>{t.cta.howItWorks}</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section split who">
+    <div>
+      <h2>{l(home.whoHeading, locale)}</h2>
+      <Prose blocks={l(home.whoBody, locale)} class="who-body" />
+      {about.training && about.training.length > 0 && (
+        <div class="training">
+          <h3 class="eyebrow">{l(home.trainingHeading, locale) ?? t.home.trainingHeading}</h3>
+          <ol>{about.training.map((i) => <li class={i.highlight ? 'highlight' : ''}>{l(i.label, locale)}{l(i.detail, locale) && <span class="muted">, {l(i.detail, locale)}</span>}</li>)}</ol>
+          <p style="margin-top:1.25rem"><a class="quiet" href={localePath('/about', locale)}>{t.cta.moreAbout}</a></p>
+        </div>
+      )}
+    </div>
+    <Photo photo={who} class="who-photo" sizes="(min-width: 52rem) 40vw, 100vw" aspect="3/4" />
+  </section>
+
+  {quotes.length > 0 && (
+    <section class="band-blush section">
+      <div class="wrap quotes">
+        {quotes.map((q, i) => <Testimonial item={q} locale={locale} size={i === 0 ? 'large' : 'small'} />)}
+      </div>
+    </section>
+  )}
+
+  <section class="wrap section split moon">
+    <div>
+      <h2>{l(home.moonHeading, locale)}</h2>
+      <p class="measure">{l(home.moonBody, locale)}</p>
+      <div class="actions">
+        <a class="btn" href={localePath('/groups-and-retreats', locale)}>{t.nav.groups}</a>
+        {settings.youtubeUrl && <a class="quiet" href={settings.youtubeUrl} rel="noopener">{t.cta.freeMeditations}</a>}
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow">{t.events.upcoming}</p>
+      <EventList events={nextGroup} settings={settings} locale={locale} compact />
+    </div>
+  </section>
+
+  <section class="wrap section closing">
+    <h2>{l(home.closingHeading, locale)}</h2>
+    <p class="measure">{l(home.closingBody, locale)}</p>
+    <div class="actions">
+      <a class="btn" href={settings.calendlyUrl ?? localePath('/contact', locale)}>{singlePrice ? fill(t.cta.bookWithPrice, { price: singlePrice }) : t.cta.book}</a>
+      {settings.whatsapp && <a class="quiet" href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`} rel="noopener">{t.cta.whatsapp}</a>}
+      <a class="quiet" href={localePath('/contact', locale)}>{t.cta.message}</a>
+    </div>
+    {l(settings.replyPromise, locale) && <p class="form-note" style="margin-top:1rem">{l(settings.replyPromise, locale)}</p>}
+  </section>
+</Base>
+<style>
+  .hero { display: grid; gap: 2.5rem; padding-top: 1.5rem; padding-bottom: 3rem; }
+  .hero h1 { max-width: 9ch; }
+  .hero .lede { margin-top: 1.5rem; }
+  .credentials { margin-top: 2.5rem; font-size: var(--text-sm); color: var(--ink-soft); max-width: 42ch; line-height: 1.6; }
+  .credentials strong { display: block; color: var(--ink); }
+  .hero-photo { aspect-ratio: 3 / 4; }
+  @media (min-width: 52rem) {
+    .hero { grid-template-columns: 7fr 5fr; gap: 4rem; align-items: stretch; padding-top: 2rem; padding-bottom: 5rem; }
+    .hero-text { display: flex; flex-direction: column; justify-content: center; }
+    .hero-photo { aspect-ratio: 3 / 4; height: 100%; }
+  }
+  .statement-text { font-family: var(--font-display); font-size: var(--text-xl); line-height: 1.25; max-width: 24ch; font-variation-settings: 'opsz' 96; margin-bottom: 1.25rem; }
+  .offers-grid { display: grid; gap: 3rem; }
+  @media (min-width: 52rem) { .offers-grid { grid-template-columns: 1fr 1fr; gap: 0; } .offers-grid > :global(.offer) { padding-right: 3.5rem; } .offers-grid > :global(.offer + .offer) { border-left: 1px solid var(--sand); padding-left: 3.5rem; padding-right: 0; } }
+  .ingredients { margin-top: 3.5rem; padding-top: 2.5rem; border-top: 1px solid var(--sand); }
+  .ingredient-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 0.5rem; font-family: var(--font-display); font-size: var(--text-lg); line-height: 1.5; font-variation-settings: 'opsz' 48; }
+  .ingredient-list li:not(:last-child)::after { content: ','; }
+  .ingredient-list a { text-decoration: none; }
+  .ingredient-list a:hover { text-decoration: underline; text-decoration-color: var(--terracotta); }
+  .who h2 { max-width: 14ch; }
+  .who :global(.who-body) { margin-top: 1.25rem; max-width: 46ch; }
+  .training { margin-top: 2.5rem; }
+  .training ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--sand); max-width: 34rem; }
+  .training li { padding: 0.7rem 0; border-bottom: 1px solid var(--sand); font-size: 1rem; }
+  .training li.highlight { font-weight: 600; }
+  .quotes { display: grid; gap: 3rem; }
+  @media (min-width: 52rem) { .quotes { grid-template-columns: 7fr 5fr; gap: 5rem; align-items: end; } }
+  .closing h2 { max-width: 10ch; }
+  .closing p { margin-top: 1.5rem; }
+</style>

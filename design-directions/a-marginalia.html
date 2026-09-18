@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Origine Healing — direction A, Marginalia</title>
+<meta name="description" content="Homepage design direction A for Origine Healing: a book-like page with a running margin column.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Pontano+Sans:wght@300..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ffffff;
+  --sand:#dcd9d0;
+  --sand-light:#efede8;
+  --ink:#3f4a49;
+  --ink-deep:#485957;
+  --ink-soft:#6b7473;
+  --terracotta:#d3957c;
+  --serif:"Cormorant Garamond", Georgia, serif;
+  --sans:"Pontano Sans", system-ui, sans-serif;
+  --gutter:1.25rem;
+  --measure:62ch;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:1.0625rem;line-height:1.7;font-weight:300}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+h1,h2,h3{font-family:var(--serif);font-weight:300;line-height:1.05;margin:0;letter-spacing:-0.01em}
+p{margin:0 0 1.25em}
+p:last-child{margin-bottom:0}
+strong{font-weight:600}
+.btn{display:inline-block;background:var(--ink);color:var(--paper);text-decoration:none;padding:.9rem 1.5rem;font-size:.95rem;font-weight:400;border-radius:2px;line-height:1.2}
+.btn:hover{background:var(--ink-deep)}
+.btn-quiet{display:inline-block;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:.15rem;font-size:.95rem}
+.btn-quiet:hover{border-color:var(--terracotta)}
+
+/* the book grid */
+.book{display:grid;grid-template-columns:1fr;column-gap:var(--gutter);padding-inline:var(--gutter);max-width:80rem;margin-inline:auto}
+.note{font-size:.8125rem;line-height:1.5;color:var(--ink-soft);font-weight:400;margin:0 0 .75rem}
+.note b{display:block;color:var(--ink);font-weight:600}
+.body{max-width:var(--measure)}
+@media (min-width:52rem){
+  :root{--gutter:2.5rem}
+  .book{grid-template-columns:repeat(12,1fr)}
+  .note{grid-column:1/4;margin:0;padding-top:.35rem;position:sticky;top:1.5rem;align-self:start}
+  .body{grid-column:4/12}
+}
+@media (min-width:72rem){:root{--gutter:4rem}}
+
+/* nav */
+header{position:relative;z-index:3;padding:1.25rem var(--gutter);display:flex;align-items:center;justify-content:space-between;gap:1rem;max-width:80rem;margin-inline:auto}
+.wordmark{white-space:nowrap;font-family:var(--serif);font-size:1.75rem;font-weight:400;text-decoration:none;font-style:italic;letter-spacing:0}
+.wordmark small{font-family:var(--sans);font-style:normal;font-size:.75rem;font-weight:400;margin-left:.4rem;color:var(--ink-soft);letter-spacing:.02em}
+nav{display:flex;gap:1.25rem;align-items:center}
+nav .btn{padding:.7rem 1.1rem;white-space:nowrap}
+nav ul{display:none;list-style:none;margin:0;padding:0;gap:1.5rem}
+nav ul a{text-decoration:none;font-size:.95rem}
+nav ul a:hover{border-bottom:1px solid var(--ink)}
+nav details{position:relative}
+nav summary{list-style:none;cursor:pointer;font-size:.95rem}
+nav summary::-webkit-details-marker{display:none}
+nav details[open] summary{text-decoration:underline}
+nav details ul{display:grid;position:absolute;right:0;top:2rem;background:var(--paper);padding:1rem 1.25rem;border:1px solid var(--sand);gap:.5rem;min-width:12rem;z-index:2}
+@media (min-width:64rem){
+  nav ul{display:flex}
+  nav details{display:none}
+}
+
+/* hero */
+.hero{padding-top:2rem;padding-bottom:4rem}
+.hero h1{font-size:clamp(2.75rem,8.5vw,6.25rem);max-width:12ch;font-weight:300}
+.hero h1 em{font-style:italic;font-weight:300}
+.hero .lede{margin-top:1.75rem;max-width:34ch;font-size:1.125rem}
+.hero .actions{margin-top:2rem;display:flex;flex-wrap:wrap;gap:1.5rem;align-items:center}
+.hero-photo{margin-top:2.5rem;aspect-ratio:3/4;object-fit:cover;width:100%}
+@media (min-width:52rem){
+  .hero{padding-top:2.5rem;padding-bottom:7rem}
+  .hero .note{grid-row:1}
+  .hero .body{grid-column:4/9;grid-row:1}
+  .hero-photo{grid-column:9/13;grid-row:1;margin-top:-1rem;margin-right:calc(var(--gutter) * -1);aspect-ratio:auto;height:min(88vh,56rem);object-fit:cover;object-position:50% 20%}
+  .hero h1{max-width:9ch}
+}
+@media (min-width:72rem){.hero-photo{grid-column:9/13}}
+
+/* intro */
+.intro{padding-block:3rem 5rem;border-top:1px solid var(--sand)}
+.intro .body>p{font-family:var(--serif);font-size:clamp(1.5rem,2.6vw,2.125rem);line-height:1.3;font-weight:400;max-width:26ch}
+.intro .body>p.sub{font-family:var(--sans);font-size:1.0625rem;line-height:1.7;font-weight:300;max-width:var(--measure);margin-top:1.5rem}
+
+/* offers */
+.offer{padding-block:3rem;border-top:1px solid var(--sand)}
+.offer h2{font-size:clamp(2rem,4.5vw,3.25rem)}
+.offer .price{font-family:var(--serif);font-size:1.75rem;font-weight:400;color:var(--ink);display:block;margin-top:.5rem}
+.offer .price span{font-family:var(--sans);font-size:.8125rem;color:var(--ink-soft);display:block;font-weight:400}
+.offer p{margin-top:1.25rem}
+.offer .actions{margin-top:1.75rem;display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center}
+.ingredients{padding-block:2.5rem 4rem}
+.ingredients ul{list-style:none;margin:.5rem 0 0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem 1.75rem;font-family:var(--serif);font-size:1.375rem;font-weight:400}
+.ingredients ul{gap:.25rem .5rem}
+.ingredients ul li:not(:last-child)::after{content:","}
+.ingredients ul li:last-child::before{content:"and ";font-size:1rem;font-family:var(--sans);color:var(--ink-soft)}
+.ingredients .body p{max-width:48ch}
+
+/* who for */
+.who{background:var(--sand-light);padding-block:4rem 4.5rem}
+.who h2{font-size:clamp(2rem,4.5vw,3.25rem);max-width:14ch}
+.who p{margin-top:1.25rem;max-width:52ch}
+.who .photo{margin-top:2.5rem;aspect-ratio:4/5;object-fit:cover;width:100%}
+@media (min-width:52rem){
+  .who .body{grid-column:4/9}
+  .who .photo{grid-column:9/13;grid-row:1;margin-top:0;margin-bottom:-8rem;align-self:end;margin-right:calc(var(--gutter) * -1)}
+  .who{padding-bottom:0}
+  .who .body{padding-bottom:4.5rem}
+}
+
+/* path */
+.path{padding-block:5rem 4rem}
+@media (min-width:52rem){.path{padding-top:11rem}}
+.path h2{font-size:clamp(2rem,4.5vw,3.25rem)}
+.path ol{list-style:none;margin:2rem 0 0;padding:0;border-top:1px solid var(--sand)}
+.path li{padding:.9rem 0;border-bottom:1px solid var(--sand);font-size:1rem}
+.path li strong{font-weight:600}
+.path .after{margin-top:1.5rem;max-width:52ch}
+
+/* testimonial */
+.voice{padding-block:4rem 5rem;border-top:1px solid var(--sand)}
+.voice blockquote{margin:0;font-family:var(--serif);font-size:clamp(1.625rem,3.2vw,2.5rem);line-height:1.25;font-weight:300;max-width:24ch;font-style:italic}
+.voice figcaption{margin-top:1.25rem;font-size:.875rem;color:var(--ink-soft)}
+
+/* moon */
+.moon{background:var(--ink);color:var(--sand);padding-block:3.5rem 4rem}
+.moon .note{color:var(--sand);opacity:.75}
+.moon .note b{color:var(--sand)}
+.moon h2{font-size:clamp(2rem,4.5vw,3.25rem);color:#fff}
+.moon p{max-width:48ch;margin-top:1.25rem;color:var(--sand)}
+.moon .btn{background:var(--sand);color:var(--ink)}
+.moon .btn:hover{background:#fff}
+.moon .btn-quiet{color:var(--sand);border-color:var(--sand)}
+.moon .actions{margin-top:1.75rem;display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center}
+.moon .orb{width:.6rem;height:.6rem;border-radius:50%;background:var(--terracotta);display:inline-block;margin-right:.5rem;vertical-align:middle}
+
+/* closing */
+.close{padding-block:5rem 4rem}
+.close h2{font-size:clamp(2.5rem,7vw,5rem);max-width:10ch}
+.close p{margin-top:1.5rem;max-width:44ch}
+.close .actions{margin-top:2rem;display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center}
+
+footer{border-top:1px solid var(--sand);padding-block:2.5rem 3rem;font-size:.875rem;color:var(--ink-soft)}
+footer .cols{display:grid;gap:1.5rem}
+footer a{text-decoration:none}
+footer a:hover{text-decoration:underline}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:.35rem}
+@media (min-width:52rem){footer .cols{grid-template-columns:repeat(4,1fr);grid-column:1/13}}
+@media (prefers-reduced-motion:no-preference){
+  .hero .body,.hero-photo{animation:rise 1.2s cubic-bezier(.2,.6,.2,1) both}
+  .hero-photo{animation-delay:.15s}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="wordmark" href="#">Origine <small>Healing</small></a>
+  <nav aria-label="Main">
+    <ul>
+      <li><a href="#">Work with me</a></li>
+      <li><a href="#">Groups and retreats</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">FAQ</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <details>
+      <summary>Menu</summary>
+      <ul>
+        <li><a href="#">Work with me</a></li>
+        <li><a href="#">Groups and retreats</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </details>
+    <a class="btn" href="https://calendly.com/stephanie-origine/60mins">Book a session</a>
+  </nav>
+</header>
+
+<main>
+<section class="book hero">
+  <p class="note"><b>Stephanie Maurel</b>Embodied healing<br>Domaine de Labourdonnais, Mapou<br>In person and online</p>
+  <div class="body">
+    <h1>Healing is a <em>return,</em> not a repair.</h1>
+    <p class="lede">Twenty years of clinical work and a decade of energy, breath and shamanic practice, brought into one room. For people who have done some of the work already and want the rest of themselves to come along.</p>
+    <div class="actions">
+      <a class="btn" href="https://calendly.com/stephanie-origine/60mins">Book a session, Rs 3,000</a>
+      <a class="btn-quiet" href="#offers">The three-month programme</a>
+    </div>
+  </div>
+  <img class="hero-photo" src="img/beach-portrait.jpg" width="1363" height="2048" alt="Stephanie Maurel on a beach in the north of Mauritius at dusk, in a white dress and pale pink shawl">
+</section>
+
+<section class="book intro">
+  <p class="note"><b>Origine</b>French for origin. A return to your natural state of being.</p>
+  <div class="body">
+    <p>Healing is not about fixing what is broken. It is about returning to what is already whole within you.</p>
+    <p class="sub">I trained in sports science, psychology and occupational therapy, and taught clinical and rehabilitative Pilates for more than twenty years. Then I went further, into hypnotherapy, embodiment coaching and shamanic practice. Origine is where the two halves meet: a practice that takes your body as seriously as your story.</p>
+  </div>
+</section>
+
+<section class="book offer" id="offers">
+  <p class="note"><b>Where most people begin</b>Book one, or a package of weekly sessions.</p>
+  <div class="body">
+    <h2>A single session</h2>
+    <span class="price">Rs 3,000 <span>60 to 75 minutes, in person or online</span></span>
+    <p>One modality, chosen with you: Access Bars, Reiki, rebirthing breathwork, embodiment coaching or Ericksonian hypnotherapy. Or a spiritual coaching session that starts with a conversation and goes where it needs to.</p>
+    <div class="actions">
+      <a class="btn" href="https://calendly.com/stephanie-origine/60mins">Book a session</a>
+      <a class="btn-quiet" href="#">What happens in a session</a>
+    </div>
+  </div>
+</section>
+<section class="book offer">
+  <p class="note"><b>For when you are ready to commit</b>Twelve weeks. Payment plans available.</p>
+  <div class="body">
+    <h2>The three-month programme</h2>
+    <span class="price">Rs 44,000 <span>Weekly sessions of 60 to 90 minutes, payment plans available</span></span>
+    <p>Twelve weeks, one session a week, drawing on everything I practise: Reiki, Access Bars, hypnotherapy, shamanic journeys, embodiment coaching, breathwork and meditation. Between sessions you have me by text and email, recorded meditations to work with, and a place at the monthly Moonlight Meditation. It asks for a full three months, because that is how long real change takes to settle.</p>
+    <div class="actions">
+      <a class="btn" href="#">Enquire about the programme</a>
+      <a class="btn-quiet" href="#">How it works</a>
+    </div>
+  </div>
+</section>
+
+<section class="book ingredients">
+  <p class="note"><b>What a session can include</b>Ingredients, not a menu. We choose together.</p>
+  <div class="body">
+    <ul>
+      <li>Access Bars</li><li>Reiki</li><li>Rebirthing breathwork</li><li>Embodiment coaching</li><li>Ericksonian hypnotherapy</li><li>Shamanic journeys</li><li>Meditation</li>
+    </ul>
+    <p style="margin-top:1.5rem"><a class="btn-quiet" href="#">Read about each modality</a></p>
+  </div>
+</section>
+
+<section class="book who">
+  <p class="note"><b>Who this is for</b></p>
+  <div class="body">
+    <h2>Chronic pain. Anxiety. A life in transition.</h2>
+    <p>Most people come after talk therapy or bodywork has taken them part of the way. They want something that works with body, mind and spirit at the same time, without having to leave any of them at the door.</p>
+    <p>You do not need to be spiritual to work with me. Everything is approached in a way that is respectful, embodied and non-dogmatic.</p>
+  </div>
+  <img class="photo" src="img/indoor-teal.jpg" width="1363" height="2048" alt="Stephanie seated in her practice room, hands folded, in a teal jumper against a stone wall">
+</section>
+
+<section class="book path">
+  <p class="note"><b>Training</b>In the order it happened.</p>
+  <div class="body">
+    <h2>The clinical came first.</h2>
+    <ol>
+      <li>Sports science and psychology</li>
+      <li>Occupational therapy</li>
+      <li><strong>Twenty years</strong> of clinical and rehabilitative Pilates, taught and practised</li>
+      <li>NLP and Ericksonian hypnotherapy</li>
+      <li>Transpersonal coaching psychology</li>
+      <li>Embodiment coaching and Authentic Self-Empowerment</li>
+      <li>Shamanic training in the North American and South African traditions</li>
+    </ol>
+    <p class="after"><a class="btn-quiet" href="#">More about Stephanie</a></p>
+  </div>
+</section>
+
+<section class="book voice">
+  <p class="note"><b>Lauren H</b>Client</p>
+  <figure class="body" style="margin:0">
+    <blockquote>You create a very gentle, grounded space to land. I've felt safe, deeply heard, and genuinely seen, which allowed real shifts to happen rather than just surface-level insight.</blockquote>
+  </figure>
+</section>
+
+<section class="book moon">
+  <p class="note"><b>Next Moonlight Meditation</b>Saturday 3 October, 7pm<br>Domaine de Labourdonnais, Mapou<br>Rs 1,500, two to three hours</p>
+  <div class="body">
+    <h2><span class="orb" aria-hidden="true"></span>Once a month, we sit together.</h2>
+    <p>An evening of guided meditation drawing on shamanic wisdom and the medicine wheel. A small group, a quiet room, and nervous systems settling in each other's company. If you would rather begin at home, the weekly guided meditations are free on YouTube.</p>
+    <div class="actions">
+      <a class="btn" href="#">Reserve a place</a>
+      <a class="btn-quiet" href="https://www.youtube.com/@OrigineMeditations">Free weekly meditations</a>
+    </div>
+  </div>
+</section>
+
+<section class="book close">
+  <p class="note"><b>Questions?</b>I reply within one business day.</p>
+  <div class="body">
+    <h2>Start with one session.</h2>
+    <p>You do not need to be certain. If this speaks to you, that is enough to begin. Book a time that suits you, or write to me first and ask anything.</p>
+    <div class="actions">
+      <a class="btn" href="https://calendly.com/stephanie-origine/60mins">Book a session, Rs 3,000</a>
+      <a class="btn-quiet" href="https://wa.me/23052520605">WhatsApp me</a>
+      <a class="btn-quiet" href="#">Send a message</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="book">
+  <div class="cols">
+    <div><strong>Origine Healing</strong><br>Domaine de Labourdonnais<br>Mapou, Mauritius</div>
+    <ul><li><a href="#">Work with me</a></li><li><a href="#">Groups and retreats</a></li><li><a href="#">Modalities</a></li><li><a href="#">About</a></li></ul>
+    <ul><li><a href="#">FAQ</a></li><li><a href="#">Blog</a></li><li><a href="#">Contact</a></li><li><a href="#">Privacy</a></li></ul>
+    <ul><li><a href="https://instagram.com/stephaniemaurel">Instagram</a></li><li><a href="https://facebook.com/stephmaurel">Facebook</a></li><li><a href="https://www.youtube.com/@OrigineMeditations">YouTube</a></li><li>Photography by Sita Kelly</li></ul>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,18 @@
+---
+import { l, type Locale } from '@/i18n';
+import type { Testimonial } from '@/lib/types';
+interface Props { item: Testimonial; locale: Locale; size?: 'large' | 'small' }
+const { item, locale, size = 'large' } = Astro.props;
+const context = l(item.context, locale);
+---
+<figure class={`voice voice-${size}`}>
+  <blockquote>{l(item.quote, locale)}</blockquote>
+  <figcaption>{item.name}{context && <span class="muted">, {context}</span>}</figcaption>
+</figure>
+<style>
+  .voice { margin: 0; }
+  .voice blockquote { margin: 0; font-family: var(--font-display); font-style: italic; line-height: 1.25; font-variation-settings: 'opsz' 96; text-wrap: pretty; }
+  .voice-large blockquote { font-size: var(--text-xl); max-width: 24ch; }
+  .voice-small blockquote { font-size: var(--text-lg); max-width: 32ch; }
+  .voice figcaption { margin-top: 1rem; font-size: var(--text-sm); }
+</style>

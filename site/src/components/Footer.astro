@@ -1,0 +1,43 @@
+---
+import { getDictionary, localePath, fill, type Locale } from '@/i18n';
+import type { SiteSettings } from '@/lib/types';
+
+interface Props { locale: Locale; settings: SiteSettings }
+const { locale, settings } = Astro.props;
+const t = getDictionary(locale);
+const a = settings.address;
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <strong>{settings.siteName ?? t.siteName}</strong><br />
+        {a?.venue && <>{a.venue}<br /></>}
+        {[a?.town, a?.country].filter(Boolean).join(', ')}
+        {settings.whatsapp && <><br /><a href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`} rel="noopener">WhatsApp {settings.whatsapp}</a></>}
+      </div>
+      <ul>
+        <li><a href={localePath('/work-with-me', locale)}>{t.nav.work}</a></li>
+        <li><a href={localePath('/groups-and-retreats', locale)}>{t.nav.groups}</a></li>
+        <li><a href={localePath('/modalities', locale)}>{t.nav.modalities}</a></li>
+        <li><a href={localePath('/about', locale)}>{t.nav.about}</a></li>
+      </ul>
+      <ul>
+        <li><a href={localePath('/faq', locale)}>{t.nav.faq}</a></li>
+        <li><a href={localePath('/blog', locale)}>{t.nav.blog}</a></li>
+        <li><a href={localePath('/contact', locale)}>{t.nav.contact}</a></li>
+        <li><a href={localePath('/privacy', locale)}>{t.nav.privacy}</a></li>
+      </ul>
+      <ul>
+        {settings.instagramUrl && <li><a href={settings.instagramUrl} rel="noopener">Instagram</a></li>}
+        {settings.facebookUrl && <li><a href={settings.facebookUrl} rel="noopener">Facebook</a></li>}
+        {settings.youtubeUrl && <li><a href={settings.youtubeUrl} rel="noopener">YouTube</a></li>}
+        {settings.photoCredit && <li>{settings.photoCreditUrl ? <a href={settings.photoCreditUrl} rel="noopener">{settings.photoCredit}</a> : settings.photoCredit}</li>}
+      </ul>
+    </div>
+    <div class="legal">
+      <span>{fill(t.footer.copyright, { year })}</span>
+    </div>
+  </div>
+</footer>

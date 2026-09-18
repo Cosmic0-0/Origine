@@ -1,0 +1,34 @@
+---
+import { getDictionary, localePath, type Locale } from '@/i18n';
+import type { SiteSettings } from '@/lib/types';
+
+interface Props { locale: Locale; settings: SiteSettings }
+const { locale, settings } = Astro.props;
+const t = getDictionary(locale);
+const items = [
+  { href: '/work-with-me', label: t.nav.work },
+  { href: '/groups-and-retreats', label: t.nav.groups },
+  { href: '/about', label: t.nav.about },
+  { href: '/faq', label: t.nav.faq },
+  { href: '/blog', label: t.nav.blog },
+  { href: '/contact', label: t.nav.contact },
+].map((i) => ({ ...i, href: localePath(i.href, locale) }));
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => (href === '/' ? current === '/' : current.startsWith(href));
+const book = settings.calendlyUrl ?? localePath('/contact', locale);
+---
+<header class="site-header">
+  <a class="wordmark" href={localePath('/', locale)}>Origine <small>Healing</small></a>
+  <nav class="site-nav" aria-label="Main">
+    <ul class="nav-list">
+      {items.map((i) => <li><a href={i.href} aria-current={isCurrent(i.href) ? 'page' : undefined}>{i.label}</a></li>)}
+    </ul>
+    <details class="menu">
+      <summary aria-label={t.nav.menu}>{t.nav.menu}</summary>
+      <ul class="nav-list">
+        {items.map((i) => <li><a href={i.href} aria-current={isCurrent(i.href) ? 'page' : undefined}>{i.label}</a></li>)}
+      </ul>
+    </details>
+    <a class="btn" href={book}>{t.nav.book}</a>
+  </nav>
+</header>
