@@ -29,6 +29,8 @@ Do these in order. Nothing here is destructive until the last section.
 
 ## Cutover
 
+- [ ] Delete the `X-Robots-Tag = "noindex"` block from `netlify.toml` — it exists to keep the preview out of Google
+- [ ] Move the Netlify site to Stephanie's team, or recreate it there, so she owns it
 - [ ] Add the domain in Netlify, update DNS at the registrar
 - [ ] Wait for HTTPS to show as active in Netlify
 - [ ] Check the old URLs redirect: /stephanie, /faq-1, /get-started, /cart, each blog post

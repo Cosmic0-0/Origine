@@ -19,3 +19,10 @@
     X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# PREVIEW ONLY. Keeps the netlify.app preview out of Google while originehealing.com
+# is still the live site. Delete this block when the real domain is pointed here.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
