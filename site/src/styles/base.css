@@ -60,6 +60,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .quiet { display: inline-block; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 0.15rem; font-size: 0.95rem; line-height: 1.3; }
 .quiet:hover { border-color: var(--terracotta); }
 .actions { display: flex; flex-wrap: wrap; gap: 1.25rem 1.75rem; align-items: center; margin-top: 1.75rem; }
+/* A label taken from the content can be long ("Enquire about ..."). On a phone it wraps inside the button;
+   on a wider screen there is room for one line, which is how the buttons were drawn. */
+@media (max-width: 52rem) { .actions .btn { white-space: normal; } }
 
 /* Header, always on the teal ground */
 .site-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 1.25rem var(--gutter); max-width: var(--wrap); margin-inline: auto; position: relative; z-index: 10; min-width: 0; }
