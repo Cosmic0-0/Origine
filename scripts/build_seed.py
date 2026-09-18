@@ -12,7 +12,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 from html_to_portable_text import convert, from_text, key
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCRATCH = sys.argv[1] if len(sys.argv) > 1 else None  # scratchpad/content dir with blog.json and faq.json
+# Folder with blog.json and faq.json scraped from the old Squarespace site (kept in the repo under scripts/source).
+SCRATCH = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), 'source')
 OUT = os.path.join(ROOT, 'site', 'src', 'seed', 'seed.ndjson')
 
 def L(en, fr=None):
