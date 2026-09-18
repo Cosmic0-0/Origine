@@ -16,6 +16,9 @@ Done, verified, committed and pushed to GitHub (`main`):
   offers, 6 modalities, all page copy. Source scrape kept in `scripts/source/`.
 - A review was run and every bug and risk fixed (`docs/review-findings.md`). Lighthouse is 99 to 100
   in all four categories on every page type. Type check is clean.
+- Tests (`site/tests/`). `npm test` checks the price, duration and date formats. `npm run test:e2e`
+  builds, then opens every built page in a 320px browser and checks it has one `h1`, alt text on every
+  image and no sideways scrolling, and that the phone menu opens and closes.
 - Docs: `README.md` (setup and deployment), `docs/editing-your-website.md` (for Stephanie),
   `docs/running-costs.md`, `docs/launch-checklist.md`, `docs/review-brief.md`, `docs/review-findings.md`.
 
@@ -29,7 +32,8 @@ Not done: everything that needs an account or a human decision. That is the list
 - Every visible string lives in `site/src/i18n/en.ts` or in Sanity. Never type copy into a component.
 - Every Sanity text field is an `{en, fr}` object. Keep it that way.
 - Before finishing any task that touches `site/`: run `cd site && npm run build` (this runs the type
-  check first) and confirm `0 errors` and `21 page(s) built`.
+  check first) and confirm `0 errors` and `21 page(s) built`. If you changed anything that shows on a
+  page, also run `npm test` and `npm run test:e2e`.
 - To rebuild the seed after editing `scripts/build_seed.py`: `python3 scripts/build_seed.py` from the
   repo root. The output is deterministic; a diff shows only what you changed.
 - `npx astro preview` in Astro 7 runs as a background daemon. Stop it with `npx astro preview stop`,
@@ -123,16 +127,21 @@ Only after tasks 2 to 5 are done and the Netlify URL has been checked on a phone
 5. Cancel the Squarespace subscription. Keep the domain if it is registered there.
 6. Done when: the domain serves the new site over HTTPS on a phone and a laptop, and Squarespace is cancelled.
 
-## Task 7. Optional improvements (from the review, still open)
+## Task 7. Optional improvements (from the review)
 
-Do these only if asked. Each is small.
+Done on 18 September 2026: the tests described above, Vision now loads only in `sanity dev`, the phone
+menu closes on Escape and on a click outside it, and `og:image:width` and `og:image:height` are set from
+the real size of the photo.
 
-- Tests: unit tests for `site/src/i18n/format.ts`; a Playwright check that no page overflows at 320px
-  and every image has alt text; a check that each page has one `h1`.
-- Load the Vision tool only in development (`studio/sanity.config.ts`).
-- Close the mobile menu on Escape and outside click (`site/src/components/Header.astro`, a few lines).
-- `og:image:width` and `og:image:height` in `site/src/layouts/Base.astro`.
-- `site/public/robots.txt` hard-codes the sitemap host; fine for production.
+The 320px check found one bug while it was being written: on Groups and retreats, the long "Enquire
+about Day workshops, drum circles and shamanic circles" label could not wrap, so the page scrolled
+sideways on a phone. A button label now wraps below 52rem (`.actions .btn` in `site/src/styles/base.css`).
+Wider screens render exactly as before, pixel for pixel.
+
+Still open, and fine to leave alone:
+
+- `site/public/robots.txt` hard-codes the sitemap host. That is correct for production; change it only
+  if the domain changes.
 
 ## Later, out of scope for now
 
