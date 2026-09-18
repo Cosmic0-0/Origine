@@ -7,10 +7,20 @@ import { portableTextToPlain } from './portableText';
 export const siteUrl = ((import.meta.env.PUBLIC_SITE_URL as string | undefined) || 'https://www.originehealing.com').replace(/\/+$/, '');
 export const abs = (path: string) => new URL(path, siteUrl).toString();
 
-export async function imageUrl(photo: Parameters<typeof resolvePhoto>[0]): Promise<string | undefined> {
+export interface SocialImage { url: string; width: number; height: number }
+
+/** The image for the og: tags. Social cards reserve the right space only if they are told its size. */
+export async function socialImage(photo: Parameters<typeof resolvePhoto>[0]): Promise<SocialImage | undefined> {
   const r = await resolvePhoto(photo);
   if (!r) return undefined;
-  return typeof r.src === 'string' ? `${r.src}?w=1200&auto=format` : abs(r.src.src);
+  if (typeof r.src !== 'string') return { url: abs(r.src.src), width: r.width, height: r.height };
+  // Sanity never upscales, so an image narrower than 1200 comes back at its own width.
+  const width = Math.min(1200, r.width);
+  return { url: `${r.src}?w=${width}&auto=format`, width, height: Math.round((r.height / r.width) * width) };
+}
+
+export async function imageUrl(photo: Parameters<typeof resolvePhoto>[0]): Promise<string | undefined> {
+  return (await socialImage(photo))?.url;
 }
 
 export async function localBusiness(settings: SiteSettings, locale: Locale, services: Service[] = []) {

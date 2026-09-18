@@ -5,7 +5,7 @@ import Prose from '@/components/Prose.astro';
 import { getDictionary, l, localePath, fill, defaultLocale, type Locale } from '@/i18n';
 import { formatDate } from '@/i18n/format';
 import { getPosts, getSettings, deref, resolvePhoto } from '@/lib/content';
-import { postSchema, imageUrl } from '@/lib/seo';
+import { postSchema, socialImage } from '@/lib/seo';
 import type { Modality } from '@/lib/types';
 
 export async function getStaticPaths() {
@@ -22,7 +22,7 @@ const title = l(post.title, locale) ?? '';
 const author = settings.practitionerName ?? 'Stephanie Maurel';
 const jsonLd = [await postSchema(post, locale, author)];
 ---
-<Base title={fill(t.meta.postTitle, { title })} description={l(post.seo?.description, locale) ?? l(post.excerpt, locale)} image={await imageUrl(post.coverImage)} locale={locale} jsonLd={jsonLd}>
+<Base title={fill(t.meta.postTitle, { title })} description={l(post.seo?.description, locale) ?? l(post.excerpt, locale)} image={await socialImage(post.coverImage)} locale={locale} jsonLd={jsonLd}>
   <article>
     <header class="wrap page-head post">
       <p class="eyebrow"><a href={localePath('/blog', locale)} style="text-decoration:none">{t.nav.blog}</a></p>
