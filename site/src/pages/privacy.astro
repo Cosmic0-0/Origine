@@ -8,9 +8,11 @@ const t = getDictionary(locale);
 const page = await getPage('privacy');
 ---
 <Base title={l(page.title, locale) ?? t.nav.privacy} description={l(page.intro, locale)} locale={locale}>
-  <section class="wrap section-tight">
+  <section class="wrap page-head">
     <h1>{l(page.title, locale)}</h1>
-    {l(page.intro, locale) && <p class="lede" style="margin-top:1.5rem">{l(page.intro, locale)}</p>}
-    <div style="margin-top:2rem"><Prose blocks={l(page.body, locale)} /></div>
+    {l(page.intro, locale) && <p class="lede">{l(page.intro, locale)}</p>}
   </section>
+  <div class="light">
+    <section class="wrap section-tight"><Prose blocks={l(page.body, locale)} /></section>
+  </div>
 </Base>

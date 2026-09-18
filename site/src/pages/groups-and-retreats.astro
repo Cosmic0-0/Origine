@@ -18,13 +18,14 @@ const photos = await Promise.all(groupOffers.map((s) => resolvePhoto(s.image)));
 const jsonLd = await Promise.all(events.map(async (e) => { const o = await deref<Service>(e.offer); return eventSchema(e, locale, l(o?.title, locale), e.price?.amount != null ? e.price : o?.price); }));
 ---
 <Base title={l(page.title, locale) ?? t.nav.groups} description={l(page.seo?.description, locale) ?? l(page.intro, locale)} locale={locale} jsonLd={jsonLd}>
-  <section class="wrap section-tight">
+  <section class="wrap page-head">
     <h1>{l(page.title, locale)}</h1>
-    {l(page.intro, locale) && <p class="lede" style="margin-top:1.5rem">{l(page.intro, locale)}</p>}
+    {l(page.intro, locale) && <p class="lede">{l(page.intro, locale)}</p>}
     <Prose blocks={l(page.body, locale)} />
   </section>
 
-  <section class="wrap section-tight" id="dates">
+  <div class="light">
+  <section class="wrap section-tight" id="dates" style="padding-top:clamp(3rem,7vw,5rem)">
     <h2>{t.events.upcoming}</h2>
     <div style="margin-top:1.5rem"><EventList events={events} settings={settings} locale={locale} /></div>
   </section>
@@ -44,8 +45,9 @@ const jsonLd = await Promise.all(events.map(async (e) => { const o = await deref
       )}
     </section>
   ))}
+  </div>
 
-  <section class="band-sand section">
+  <section class="band-night section">
     <div class="wrap"><NewsletterForm settings={settings} locale={locale} /></div>
   </section>
 </Base>

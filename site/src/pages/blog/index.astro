@@ -11,11 +11,12 @@ const [page, posts] = await Promise.all([getPage('blog'), getPosts()]);
 const covers = await Promise.all(posts.map((p) => resolvePhoto(p.coverImage)));
 ---
 <Base title={l(page.title, locale) ?? t.nav.blog} description={l(page.seo?.description, locale) ?? l(page.intro, locale)} locale={locale}>
-  <section class="wrap section-tight">
+  <section class="wrap page-head">
     <h1>{l(page.title, locale)}</h1>
-    {l(page.intro, locale) && <p class="lede" style="margin-top:1.5rem">{l(page.intro, locale)}</p>}
+    {l(page.intro, locale) && <p class="lede">{l(page.intro, locale)}</p>}
   </section>
-  <section class="wrap section-tight">
+  <div class="light">
+  <section class="wrap section">
     <ul class="posts">
       {posts.map((p, i) => (
         <li class="post-card">
@@ -29,6 +30,7 @@ const covers = await Promise.all(posts.map((p) => resolvePhoto(p.coverImage)));
       ))}
     </ul>
   </section>
+  </div>
 </Base>
 <style>
   .posts { list-style: none; margin: 0; padding: 0; display: grid; gap: 3rem 2.5rem; }

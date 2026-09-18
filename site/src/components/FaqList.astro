@@ -20,14 +20,14 @@ const { entries, locale, heading } = Astro.props;
 )}
 <style>
   .faq-group + .faq-group { margin-top: 3.5rem; }
-  .faq-heading { font-size: var(--text-lg); margin-bottom: 1rem; color: var(--ink-soft); font-variation-settings: 'opsz' 48; }
-  .faq { border-top: 1px solid var(--sand); }
-  .faq:last-child { border-bottom: 1px solid var(--sand); }
+  .faq-heading { font-size: var(--text-lg); margin-bottom: 1rem; color: var(--text-soft); font-variation-settings: 'opsz' 48; }
+  .faq { border-top: 1px solid var(--line); }
+  .faq:last-child { border-bottom: 1px solid var(--line); }
   .faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: baseline; gap: 1.5rem; padding: 1.1rem 0; }
   .faq summary::-webkit-details-marker { display: none; }
   .faq summary h3 { font-size: var(--text-lg); font-variation-settings: 'opsz' 48; line-height: 1.25; }
   .faq-mark { flex: none; width: 0.85rem; height: 0.85rem; position: relative; top: 0.1rem; }
-  .faq-mark::before, .faq-mark::after { content: ''; position: absolute; inset: 50% 0 auto; height: 1px; background: var(--ink); transition: transform 0.25s var(--ease); }
+  .faq-mark::before, .faq-mark::after { content: ''; position: absolute; inset: 50% 0 auto; height: 1px; background: currentColor; transition: transform 0.25s var(--ease); }
   .faq-mark::after { transform: rotate(90deg); }
   .faq[open] .faq-mark::after { transform: rotate(0); }
   .faq-answer { padding: 0 0 1.5rem; max-width: var(--measure); }

@@ -1,15 +1,28 @@
 /* Brand tokens. The five colours are Stephanie's existing palette; everything else is derived from them. */
 :root {
-  --ink: #3f4a49;          /* deep slate teal, text */
-  --ink-deep: #485957;     /* darker teal, hover and dark bands */
-  --ink-soft: #56605f;     /* derived: secondary text, 4.6:1 on sand, 5.9:1 on the sky background */
+  --ink: #3f4a49;          /* deep slate teal: text on light, the page ground on dark */
+  --ink-deep: #485957;     /* darker teal, hover */
+  --ink-night: #313b3a;    /* derived: footer and the moon section */
+  --ink-soft: #56605f;     /* derived: secondary text on light, 4.6:1 on sand */
   --terracotta: #d3957c;   /* accent, shapes and rules only, never small text */
-  --terracotta-deep: #9a5535; /* derived: the terracotta that passes 4.5:1 for text on white and on the sky background */
-  --sand: #dcd9d0;         /* warm sand */
+  --terracotta-deep: #9a5535; /* derived: the terracotta that passes 4.5:1 for text on light */
+  --sand: #dcd9d0;         /* warm sand: text on the teal ground, 6.5:1 */
+  --sand-dim: #bdbcb5;     /* derived: secondary text on the teal ground, 4.8:1 */
   --sand-light: #efede8;   /* derived tint */
-  --paper: #ffffff;
-  --sky: #f5f3ef;          /* derived: page background, the colour of the beach sky in the photographs */
-  --blush: #efe6e1;        /* derived from the shawl */
+  --paper: #f3f1ec;        /* derived: the light interludes */
+  --white: #ffffff;
+
+  /* Context tokens. The page ground is teal; sections with .light flip these. */
+  --bg: var(--ink);
+  --text: var(--sand);
+  --text-soft: var(--sand-dim);
+  --heading: var(--white);
+  --line: rgba(220, 217, 208, 0.22);
+  --link: var(--white);
+  --btn-bg: var(--sand);
+  --btn-text: var(--ink);
+  --btn-hover: var(--white);
+  --panel: var(--ink-deep);
 
   /* --font-display and --font-body are defined by Astro's <Font> component in the page head. */
 
@@ -25,8 +38,19 @@
   --measure: 62ch;
   --gutter: 1.25rem;
   --wrap: 84rem;
-  --radius: 3px;
   --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.light {
+  --bg: var(--paper);
+  --text: var(--ink);
+  --text-soft: var(--ink-soft);
+  --heading: var(--ink);
+  --line: var(--sand);
+  --link: var(--terracotta-deep);
+  --btn-bg: var(--ink);
+  --btn-text: var(--white);
+  --btn-hover: var(--ink-deep);
+  --panel: var(--sand-light);
 }
 @media (min-width: 52rem) { :root { --gutter: 2.5rem; } }
 @media (min-width: 72rem) { :root { --gutter: 4rem; } }

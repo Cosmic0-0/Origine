@@ -18,11 +18,11 @@ const jsonLd = [{
 }];
 ---
 <Base title={`${t.nav.about} ${settings.practitionerName ?? ''}`.trim()} description={l(about.seo?.description, locale) ?? l(about.intro, locale)} locale={locale} jsonLd={jsonLd}>
-  <section class="wrap section-tight split about-hero">
+  <section class="wrap page-head split about-hero">
     <div>
       <p class="eyebrow">{settings.practitionerName}</p>
       <h1>{l(about.heading, locale)}</h1>
-      {l(about.intro, locale) && <p class="lede" style="margin-top:1.5rem">{l(about.intro, locale)}</p>}
+      {l(about.intro, locale) && <p class="lede">{l(about.intro, locale)}</p>}
       {about.training && about.training.length > 0 && (
         <ol class="training">{about.training.map((i) => <li class={i.highlight ? 'highlight' : ''}>{l(i.label, locale)}{l(i.detail, locale) && <span class="muted">, {l(i.detail, locale)}</span>}</li>)}</ol>
       )}
@@ -30,6 +30,7 @@ const jsonLd = [{
     <Photo photo={portrait} priority sizes="(min-width: 52rem) 40vw, 100vw" aspect="3/4" />
   </section>
 
+  <div class="light" style="padding-top:clamp(3rem,7vw,5rem)">
   {sections.map((s, i) => (
     <section class={`wrap section about-section ${s.photo ? 'split' : ''} ${s.photo && i % 2 ? 'split-reverse' : ''}`}>
       {s.photo && i % 2 === 1 && <Photo photo={s.photo} sizes="(min-width: 52rem) 40vw, 100vw" aspect="4/5" />}
@@ -40,18 +41,22 @@ const jsonLd = [{
       {s.photo && i % 2 === 0 && <Photo photo={s.photo} sizes="(min-width: 52rem) 40vw, 100vw" aspect="4/5" />}
     </section>
   ))}
+  </div>
 
-  <section class="wrap section-tight">
-    <div class="actions" style="margin-top:0">
+  <section class="wrap section">
+    <h2 style="max-width:12ch">{t.home.offersHeading}</h2>
+    <div class="actions">
       <a class="btn" href={localePath('/work-with-me', locale)}>{t.nav.work}</a>
       <a class="quiet" href={localePath('/contact', locale)}>{t.cta.message}</a>
     </div>
   </section>
 </Base>
 <style>
-  .training { list-style: none; margin: 2rem 0 0; padding: 0; border-top: 1px solid var(--sand); max-width: 34rem; }
-  .training li { padding: 0.7rem 0; border-bottom: 1px solid var(--sand); font-size: 1rem; }
-  .training li.highlight { font-weight: 600; }
+  .training { list-style: none; margin: 2rem 0 0; padding: 0 0 0 1.25rem; border-left: 1px solid var(--line); max-width: 34rem; }
+  .training li { position: relative; padding: 0.5rem 0; font-size: 1rem; }
+  .training li::before { content: ''; position: absolute; left: calc(-1.25rem - 3px); top: 1.15rem; width: 5px; height: 5px; border-radius: 50%; background: var(--sand); }
+  .training li.highlight { color: var(--heading); font-weight: 600; }
+  .training li.highlight::before { background: var(--terracotta); }
   .about-section { padding-top: 0; }
   .about-section :global(.about-body) { margin-top: 1.25rem; }
 </style>

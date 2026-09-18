@@ -23,30 +23,36 @@ const author = settings.practitionerName ?? 'Stephanie Maurel';
 const jsonLd = [await postSchema(post, locale, author)];
 ---
 <Base title={fill(t.meta.postTitle, { title })} description={l(post.seo?.description, locale) ?? l(post.excerpt, locale)} image={await imageUrl(post.coverImage)} locale={locale} jsonLd={jsonLd}>
-  <article class="wrap section-tight post">
-    <p class="eyebrow"><a href={localePath('/blog', locale)} style="text-decoration:none">{t.nav.blog}</a></p>
-    <h1>{title}</h1>
-    <p class="muted" style="margin-top:1rem"><time datetime={post.publishedAt}>{formatDate(post.publishedAt, locale)}</time> · {t.blog.by} {author}</p>
-    <Photo photo={cover} priority sizes="(min-width: 52rem) 42rem, 100vw" class="post-cover" aspect="3/2" />
-    <Prose blocks={l(post.body, locale)} class="post-body" />
-    {modality && (
-      <aside class="post-related">
-        <p class="eyebrow">{t.blog.related}</p>
-        <h2>{l(modality.title, locale)}</h2>
-        <p class="measure">{l(modality.summary, locale)}</p>
-        <div class="actions">
-          <a class="btn" href={settings.calendlyUrl ?? localePath('/contact', locale)}>{t.cta.book}</a>
-          <a class="quiet" href={localePath(`/modalities/${modality.slug.current}`, locale)}>{fill(t.cta.aboutName, { name: l(modality.title, locale) ?? '' })}</a>
-        </div>
-      </aside>
-    )}
+  <article>
+    <header class="wrap page-head post">
+      <p class="eyebrow"><a href={localePath('/blog', locale)} style="text-decoration:none">{t.nav.blog}</a></p>
+      <h1>{title}</h1>
+      <p class="muted" style="margin-top:1rem"><time datetime={post.publishedAt}>{formatDate(post.publishedAt, locale)}</time>, {t.blog.by} {author}</p>
+    </header>
+    <div class="light">
+      <div class="wrap post" style="padding-bottom:clamp(2rem,5vw,3.5rem)">
+        <Photo photo={cover} priority sizes="(min-width: 52rem) 42rem, 100vw" class="post-cover" aspect="3/2" />
+        <Prose blocks={l(post.body, locale)} class="post-body" />
+        {modality && (
+          <aside class="post-related">
+            <p class="eyebrow">{t.blog.related}</p>
+            <h2>{l(modality.title, locale)}</h2>
+            <p class="measure">{l(modality.summary, locale)}</p>
+            <div class="actions">
+              <a class="btn" href={settings.calendlyUrl ?? localePath('/contact', locale)}>{t.cta.book}</a>
+              <a class="quiet" href={localePath(`/modalities/${modality.slug.current}`, locale)}>{fill(t.cta.aboutName, { name: l(modality.title, locale) ?? '' })}</a>
+            </div>
+          </aside>
+        )}
+      </div>
+    </div>
   </article>
 </Base>
 <style>
-  .post { max-width: calc(var(--measure) + 2 * var(--gutter)); }
-  .post :global(.post-cover) { margin-top: 2rem; }
+  .post { max-width: calc(var(--measure) + 2 * var(--gutter)); margin-inline: auto; }
+  .post :global(.post-cover) { margin-top: -3rem; }
   .post :global(.post-body) { margin-top: 2.5rem; }
-  .post-related { margin-top: 4rem; padding: 2rem; background: var(--sand-light); }
+  .post-related { margin-top: 4rem; padding: 2rem; background: var(--panel); }
   .post-related h2 { font-size: var(--text-xl); }
   .post-related p { margin-top: 0.75rem; }
 </style>

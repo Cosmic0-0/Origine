@@ -4,9 +4,8 @@ import Photo from '@/components/Photo.astro';
 import Prose from '@/components/Prose.astro';
 import Offer from '@/components/Offer.astro';
 import Testimonial from '@/components/Testimonial.astro';
-import EventList from '@/components/EventList.astro';
 import { getDictionary, l, localePath, fill, defaultLocale, type Locale } from '@/i18n';
-import { formatPrice } from '@/i18n/format';
+import { formatPrice, formatEventDate, formatDuration } from '@/i18n/format';
 import { getHomePage, getAboutPage, getSettings, getServices, getModalities, getTestimonials, getEvents, resolvePhoto } from '@/lib/content';
 import { localBusiness, serviceSchema } from '@/lib/seo';
 
@@ -18,33 +17,36 @@ const [home, about, settings, services, modalities, testimonials, events] = awai
 const featured = services.filter((s) => s.showOnHome);
 const single = services.find((s) => s.kind === 'session');
 const singlePrice = formatPrice(single?.price?.amount, single?.price?.currency, locale);
-const quotes = testimonials.filter((q) => q.featured).slice(0, 2);
+const quote = testimonials.find((q) => q.featured);
 const moonlight = services.find((s) => s.slug.current === 'moonlight-meditation');
-const nextGroup = events.filter((e) => e.offer?._ref === moonlight?._id).slice(0, 1);
-const hero = await resolvePhoto(home.heroImage);
-const who = await resolvePhoto(home.whoImage);
+const nextMoon = events.find((e) => e.offer?._ref === moonlight?._id);
+const moonPrice = formatPrice(nextMoon?.price?.amount ?? moonlight?.price?.amount, nextMoon?.price?.currency ?? moonlight?.price?.currency, locale);
+const moonDuration = formatDuration(moonlight?.durationMinutes?.min, moonlight?.durationMinutes?.max, locale);
+const bookHref = settings.calendlyUrl ?? localePath('/contact', locale);
+const bookLabel = singlePrice ? fill(t.cta.bookWithPrice, { price: singlePrice }) : t.cta.book;
+const [hero, quotePhoto, closingPhoto] = await Promise.all([resolvePhoto(home.heroImage), resolvePhoto(home.quoteImage), resolvePhoto(home.closingImage)]);
 const jsonLd = [await localBusiness(settings, locale), ...featured.map((s) => serviceSchema(s, locale))];
 ---
 <Base title={t.meta.homeTitle} description={l(home.heroLede, locale)} locale={locale} jsonLd={jsonLd} bodyClass="page-home">
-  <section class="hero wrap">
+  <section class="hero">
     <div class="hero-text rise">
       <h1>{l(home.heroHeading, locale)}</h1>
       <p class="lede">{l(home.heroLede, locale)}</p>
       <div class="actions">
-        <a class="btn" href={settings.calendlyUrl ?? localePath('/contact', locale)}>{singlePrice ? fill(t.cta.bookWithPrice, { price: singlePrice }) : t.cta.book}</a>
+        <a class="btn" href={bookHref}>{bookLabel}</a>
         <a class="quiet" href="#offers">{t.cta.programme}</a>
       </div>
       {l(home.credentialsLine, locale) && <p class="credentials"><strong>{settings.practitionerName}</strong>{l(home.credentialsLine, locale)}</p>}
     </div>
-    <Photo photo={hero} class="hero-photo rise rise-late" priority sizes="(min-width: 52rem) 40vw, 100vw" />
+    <Photo photo={hero} class="hero-photo rise rise-late" priority sizes="(min-width: 52rem) 42vw, 100vw" />
   </section>
 
-  <section class="statement wrap section">
+  <section class="statement wrap">
     <p class="statement-text">{l(home.statement, locale)}</p>
     {l(home.originMeaning, locale) && <p class="measure muted">{l(home.originMeaning, locale)}</p>}
   </section>
 
-  <section class="band-paper section" id="offers">
+  <section class="light offers section" id="offers">
     <div class="wrap">
       <h2 class="sr-only">{t.home.offersHeading}</h2>
       <div class="offers-grid">
@@ -58,83 +60,110 @@ const jsonLd = [await localBusiness(settings, locale), ...featured.map((s) => se
     </div>
   </section>
 
-  <section class="wrap section split who">
+  <section class="wrap section who">
     <div>
       <h2>{l(home.whoHeading, locale)}</h2>
       <Prose blocks={l(home.whoBody, locale)} class="who-body" />
-      {about.training && about.training.length > 0 && (
-        <div class="training">
-          <h3 class="eyebrow">{l(home.trainingHeading, locale) ?? t.home.trainingHeading}</h3>
-          <ol>{about.training.map((i) => <li class={i.highlight ? 'highlight' : ''}>{l(i.label, locale)}{l(i.detail, locale) && <span class="muted">, {l(i.detail, locale)}</span>}</li>)}</ol>
-          <p style="margin-top:1.25rem"><a class="quiet" href={localePath('/about', locale)}>{t.cta.moreAbout}</a></p>
-        </div>
-      )}
     </div>
-    <Photo photo={who} class="who-photo" sizes="(min-width: 52rem) 40vw, 100vw" aspect="3/4" />
+    {about.training && about.training.length > 0 && (
+      <div class="path">
+        <h3 class="eyebrow">{l(home.trainingHeading, locale) ?? t.home.trainingHeading}</h3>
+        <ol>{about.training.map((i) => <li class={i.highlight ? 'highlight' : ''}>{l(i.label, locale)}{l(i.detail, locale) && <span class="muted">, {l(i.detail, locale)}</span>}</li>)}</ol>
+        <p style="margin-top:1.5rem"><a class="quiet" href={localePath('/about', locale)}>{t.cta.moreAbout}</a></p>
+      </div>
+    )}
   </section>
 
-  {quotes.length > 0 && (
-    <section class="band-blush section">
-      <div class="wrap quotes">
-        {quotes.map((q, i) => <Testimonial item={q} locale={locale} size={i === 0 ? 'large' : 'small'} />)}
-      </div>
+  {quote && (
+    <section class="wrap voice">
+      <Photo photo={quotePhoto} sizes="(min-width: 52rem) 30vw, 100vw" aspect="2/3" />
+      <Testimonial item={quote} locale={locale} size="large" />
     </section>
   )}
 
-  <section class="wrap section split moon">
-    <div>
+  <section class="band-night moon">
+    <div class="wrap">
+      <div class="orb" aria-hidden="true"></div>
       <h2>{l(home.moonHeading, locale)}</h2>
-      <p class="measure">{l(home.moonBody, locale)}</p>
+      {nextMoon ? (
+        <>
+          <p class="when"><time datetime={nextMoon.start}>{formatEventDate(nextMoon.start, nextMoon.end, locale)}</time></p>
+          <p class="where muted">{[l(nextMoon.location, locale), moonPrice, moonDuration].filter(Boolean).join('. ')}</p>
+        </>
+      ) : (
+        <p class="where muted">{t.events.none}</p>
+      )}
+      <p class="desc">{l(home.moonBody, locale)}</p>
       <div class="actions">
-        <a class="btn" href={localePath('/groups-and-retreats', locale)}>{t.nav.groups}</a>
+        <a class="btn" href={localePath('/groups-and-retreats', locale)}>{nextMoon ? t.cta.reserve : t.nav.groups}</a>
         {settings.youtubeUrl && <a class="quiet" href={settings.youtubeUrl} rel="noopener">{t.cta.freeMeditations}</a>}
       </div>
-    </div>
-    <div>
-      <p class="eyebrow">{t.events.upcoming}</p>
-      <EventList events={nextGroup} settings={settings} locale={locale} compact />
     </div>
   </section>
 
   <section class="wrap section closing">
-    <h2>{l(home.closingHeading, locale)}</h2>
-    <p class="measure">{l(home.closingBody, locale)}</p>
-    <div class="actions">
-      <a class="btn" href={settings.calendlyUrl ?? localePath('/contact', locale)}>{singlePrice ? fill(t.cta.bookWithPrice, { price: singlePrice }) : t.cta.book}</a>
-      {settings.whatsapp && <a class="quiet" href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`} rel="noopener">{t.cta.whatsapp}</a>}
-      <a class="quiet" href={localePath('/contact', locale)}>{t.cta.message}</a>
+    <div class="closing-text">
+      <h2>{l(home.closingHeading, locale)}</h2>
+      <p class="measure">{l(home.closingBody, locale)}</p>
+      <div class="actions">
+        <a class="btn" href={bookHref}>{bookLabel}</a>
+        {settings.whatsapp && <a class="quiet" href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`} rel="noopener">{t.cta.whatsapp}</a>}
+        <a class="quiet" href={localePath('/contact', locale)}>{t.cta.message}</a>
+      </div>
+      {l(settings.replyPromise, locale) && <p class="form-note" style="margin-top:1rem">{l(settings.replyPromise, locale)}</p>}
     </div>
-    {l(settings.replyPromise, locale) && <p class="form-note" style="margin-top:1rem">{l(settings.replyPromise, locale)}</p>}
+    <Photo photo={closingPhoto} class="closing-photo" sizes="(min-width: 52rem) 36vw, 100vw" aspect="3/4" />
   </section>
 </Base>
 <style>
-  .hero { display: grid; gap: 2.5rem; padding-top: 1.5rem; padding-bottom: 3rem; }
-  .hero h1 { max-width: 9ch; }
-  .hero .lede { margin-top: 1.5rem; }
-  .credentials { margin-top: 2.5rem; font-size: var(--text-sm); color: var(--ink-soft); max-width: 42ch; line-height: 1.6; }
-  .credentials strong { display: block; color: var(--ink); }
-  .hero-photo { aspect-ratio: 3 / 4; }
+  /* Hero: text left, photo flush to the right edge of the wrap, full height on desktop. */
+  .hero { display: grid; gap: 0; max-width: var(--wrap); margin-inline: auto; }
+  .hero-text { padding: 1.5rem var(--gutter) 3rem; }
+  .hero h1 { max-width: 8ch; }
+  .hero .lede { margin-top: 1.75rem; }
+  .credentials { margin-top: 2.5rem; font-size: var(--text-sm); color: var(--text-soft); max-width: 42ch; line-height: 1.6; }
+  .credentials strong { display: block; }
+  .hero-photo { aspect-ratio: 4 / 5; }
   @media (min-width: 52rem) {
-    .hero { grid-template-columns: 7fr 5fr; gap: 4rem; align-items: stretch; padding-top: 2rem; padding-bottom: 5rem; }
-    .hero-text { display: flex; flex-direction: column; justify-content: center; }
-    .hero-photo { aspect-ratio: 3 / 4; height: 100%; }
+    .hero { grid-template-columns: 7fr 5fr; min-height: calc(100vh - 5.5rem); }
+    .hero-text { padding-top: 3rem; padding-bottom: 3rem; display: flex; flex-direction: column; justify-content: center; }
+    .hero-text .credentials { margin-top: auto; padding-top: 3rem; }
+    .hero-photo { aspect-ratio: auto; height: 100%; }
   }
-  .statement-text { font-family: var(--font-display); font-size: var(--text-xl); line-height: 1.25; max-width: 24ch; font-variation-settings: 'opsz' 96; margin-bottom: 1.25rem; }
+  .statement { padding-block: clamp(3rem, 8vw, 5.5rem) clamp(3rem, 7vw, 5rem); border-top: 1px solid var(--line); }
+  .statement-text { font-family: var(--font-display); font-size: var(--text-xl); line-height: 1.2; color: var(--heading); max-width: 24ch; font-variation-settings: 'opsz' 96; margin-bottom: 1.5rem; }
   .offers-grid { display: grid; gap: 3rem; }
-  @media (min-width: 52rem) { .offers-grid { grid-template-columns: 1fr 1fr; gap: 0; } .offers-grid > :global(.offer) { padding-right: 3.5rem; } .offers-grid > :global(.offer + .offer) { border-left: 1px solid var(--sand); padding-left: 3.5rem; padding-right: 0; } }
-  .ingredients { margin-top: 3.5rem; padding-top: 2.5rem; border-top: 1px solid var(--sand); }
-  .ingredient-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 0.5rem; font-family: var(--font-display); font-size: var(--text-lg); line-height: 1.5; font-variation-settings: 'opsz' 48; }
+  @media (min-width: 52rem) {
+    .offers-grid { grid-template-columns: 1fr 1fr; gap: 0; }
+    .offers-grid > :global(.offer) { padding-right: 3.5rem; }
+    .offers-grid > :global(.offer + .offer) { border-left: 1px solid var(--line); padding-left: 3.5rem; padding-right: 0; }
+  }
+  .ingredients { margin-top: 3.5rem; padding-top: 2.5rem; border-top: 1px solid var(--line); }
+  .ingredient-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 0.5rem; font-family: var(--font-display); font-size: var(--text-lg); line-height: 1.5; font-variation-settings: 'opsz' 48; color: var(--heading); }
   .ingredient-list li:not(:last-child)::after { content: ','; }
   .ingredient-list a { text-decoration: none; }
   .ingredient-list a:hover { text-decoration: underline; text-decoration-color: var(--terracotta); }
+  .who { display: grid; gap: 3rem; border-top: 1px solid var(--line); }
   .who h2 { max-width: 14ch; }
-  .who :global(.who-body) { margin-top: 1.25rem; max-width: 46ch; }
-  .training { margin-top: 2.5rem; }
-  .training ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--sand); max-width: 34rem; }
-  .training li { padding: 0.7rem 0; border-bottom: 1px solid var(--sand); font-size: 1rem; }
-  .training li.highlight { font-weight: 600; }
-  .quotes { display: grid; gap: 3rem; }
-  @media (min-width: 52rem) { .quotes { grid-template-columns: 7fr 5fr; gap: 5rem; align-items: end; } }
+  .who :global(.who-body) { margin-top: 1.25rem; max-width: 44ch; }
+  @media (min-width: 52rem) { .who { grid-template-columns: 6fr 5fr; gap: 5rem; } }
+  .path ol { list-style: none; margin: 1rem 0 0; padding: 0 0 0 1.25rem; border-left: 1px solid var(--line); }
+  .path li { position: relative; padding: 0.5rem 0; font-size: 1rem; }
+  .path li::before { content: ''; position: absolute; left: calc(-1.25rem - 3px); top: 1.15rem; width: 5px; height: 5px; border-radius: 50%; background: var(--sand); }
+  .path li.highlight { color: var(--heading); font-weight: 600; }
+  .path li.highlight::before { background: var(--terracotta); }
+  .voice { display: grid; gap: 2rem; padding-bottom: clamp(3rem, 8vw, 6rem); align-items: end; }
+  @media (min-width: 52rem) { .voice { grid-template-columns: 4fr 7fr; gap: 5rem; } }
+  .moon { padding-block: clamp(3.5rem, 8vw, 5.5rem); text-align: center; }
+  .moon .orb { width: clamp(5rem, 12vw, 8rem); height: clamp(5rem, 12vw, 8rem); border-radius: 50%; background: var(--terracotta); margin: 0 auto 2rem; }
+  .moon h2 { max-width: 14ch; margin-inline: auto; }
+  .moon .when { font-family: var(--font-display); font-size: var(--text-lg); color: var(--heading); margin: 1.25rem 0 0.25rem; font-variation-settings: 'opsz' 48; }
+  .moon .where { font-size: var(--text-sm); }
+  .moon .desc { max-width: 46ch; margin: 1.5rem auto 0; }
+  .moon .actions { justify-content: center; margin-top: 2rem; }
+  .closing { display: grid; gap: 2.5rem; align-items: center; }
   .closing h2 { max-width: 10ch; }
   .closing p { margin-top: 1.5rem; }
+  .closing-photo { aspect-ratio: 3 / 4; }
+  @media (min-width: 52rem) { .closing { grid-template-columns: 7fr 5fr; gap: 5rem; } }
 </style>

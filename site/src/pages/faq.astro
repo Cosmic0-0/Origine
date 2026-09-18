@@ -12,21 +12,23 @@ const topics = ['about', 'sessions', 'booking'] as const;
 const jsonLd = [faqSchema(entries, locale)];
 ---
 <Base title={l(page.title, locale) ?? t.nav.faq} description={l(page.seo?.description, locale) ?? l(page.intro, locale)} locale={locale} jsonLd={jsonLd}>
-  <section class="wrap section-tight">
+  <section class="wrap page-head">
     <h1>{l(page.title, locale)}</h1>
-    {l(page.intro, locale) && <p class="lede" style="margin-top:1.5rem">{l(page.intro, locale)}</p>}
+    {l(page.intro, locale) && <p class="lede">{l(page.intro, locale)}</p>}
   </section>
-  <section class="wrap section-tight faq-page">
-    {topics.map((topic) => <FaqList entries={entries.filter((e) => (e.topic ?? 'about') === topic)} locale={locale} heading={t.faq.topics[topic]} />)}
-  </section>
-  <section class="wrap section-tight">
-    <div class="actions" style="margin-top:0">
+  <div class="light">
+    <section class="wrap section faq-page">
+      {topics.map((topic) => <FaqList entries={entries.filter((e) => (e.topic ?? 'about') === topic)} locale={locale} heading={t.faq.topics[topic]} />)}
+    </section>
+  </div>
+  <section class="wrap section">
+    <h2 style="max-width:12ch">{t.faq.stillAsking}</h2>
+    <div class="actions">
       <a class="btn" href={settings.calendlyUrl ?? localePath('/contact', locale)}>{t.cta.book}</a>
       <a class="quiet" href={localePath('/contact', locale)}>{t.cta.message}</a>
     </div>
   </section>
 </Base>
 <style>
-  .faq-page { max-width: calc(48rem + 2 * var(--gutter)); margin-inline: 0; }
-  @media (min-width: 72rem) { .faq-page { margin-inline: auto; } }
+  .faq-page { max-width: calc(48rem + 2 * var(--gutter)); margin-inline: auto; }
 </style>

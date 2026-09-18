@@ -270,7 +270,7 @@ docs.append({
     '_id': 'homePage', '_type': 'homePage',
     'heroHeading': L('Healing is a return, not a repair.'),
     'heroLede': L('Embodied healing in the north of Mauritius and online, for people who have done some of the work already and want the rest of themselves to come along.'),
-    'heroImage': photo('beach-portrait.jpg', 'Stephanie Maurel on a beach in the north of Mauritius at dusk, in a white dress and pale pink shawl', (0.5, 0.25)),
+    'heroImage': photo('indoor-teal.jpg', 'Stephanie Maurel seated in her practice room in a teal jumper, hands folded, against a stone wall', (0.5, 0.2)),
     'credentialsLine': L('Twenty years of clinical and rehabilitative Pilates and an occupational therapy background, then hypnotherapy, embodiment coaching and shamanic training. All of it in the room with you.'),
     'statement': L('Healing is not about fixing what is broken. It is about returning to what is already whole within you.'),
     'originMeaning': L('Origine is French for origin. I use it to mean a return to your natural state of being. The work is respectful, embodied and non-dogmatic, and you do not need to be spiritual for it to help.'),
@@ -278,12 +278,13 @@ docs.append({
     'whoBody': LB(from_text("""Most people come after talk therapy or bodywork has taken them part of the way. They want something that works with body, mind and spirit at the same time, without having to leave any of them at the door.
 
 You do not need to be spiritual to work with me. Everything is approached in a way that is respectful, embodied and non-dogmatic.""")),
-    'whoImage': photo('indoor-teal.jpg', 'Stephanie seated in her practice room, hands folded, in a teal jumper against a stone wall', (0.5, 0.3)),
+    'quoteImage': photo('beach-shawl.jpg', 'Stephanie laughing on a beach at dusk, wrapped in a pale pink shawl', (0.5, 0.3)),
     'trainingHeading': L('The clinical came first.'),
     'moonHeading': L('Once a month, we sit together.'),
     'moonBody': L('An evening of guided meditation drawing on shamanic wisdom and the medicine wheel. A small group, a quiet room, and nervous systems settling in each other’s company. If you would rather begin at home, the weekly guided meditations are free on YouTube.'),
     'closingHeading': L('Start with one session.'),
     'closingBody': L('You do not need to be certain. If this speaks to you, that is enough to begin. Book a time that suits you, or write to me first and ask anything.'),
+    'closingImage': photo('beach-dance.jpg', 'Stephanie turning on the beach at dusk in a pale linen jumpsuit, arms open', (0.5, 0.4)),
 })
 
 about_sections = [

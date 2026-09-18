@@ -10,11 +10,12 @@ const t = getDictionary(locale);
 const [page, modalities] = await Promise.all([getPage('modalities'), getModalities()]);
 ---
 <Base title={l(page.title, locale) ?? t.nav.modalities} description={l(page.seo?.description, locale) ?? l(page.intro, locale)} locale={locale}>
-  <section class="wrap section-tight">
+  <section class="wrap page-head">
     <h1>{l(page.title, locale)}</h1>
-    {l(page.intro, locale) && <p class="lede" style="margin-top:1.5rem">{l(page.intro, locale)}</p>}
+    {l(page.intro, locale) && <p class="lede">{l(page.intro, locale)}</p>}
     <Prose blocks={l(page.body, locale)} />
   </section>
+  <div class="light">
   <section class="wrap section-tight">
     <ul class="modalities">
       {modalities.map((m) => {
@@ -34,10 +35,11 @@ const [page, modalities] = await Promise.all([getPage('modalities'), getModaliti
   <section class="wrap section-tight">
     <div class="actions" style="margin-top:0"><a class="btn" href={localePath('/work-with-me', locale)}>{t.nav.work}</a></div>
   </section>
+  </div>
 </Base>
 <style>
   .modalities { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
-  .modalities li { padding: 2rem 0; border-top: 1px solid var(--sand); display: grid; gap: 0.5rem; max-width: var(--measure); }
+  .modalities li { padding: 2rem 0; border-top: 1px solid var(--line); display: grid; gap: 0.5rem; max-width: var(--measure); }
   .modalities h2 { font-size: var(--text-xl); }
   .modalities h2 a { text-decoration: none; }
   .modalities h2 a:hover { text-decoration: underline; text-decoration-color: var(--terracotta); }

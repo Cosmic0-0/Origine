@@ -27,21 +27,26 @@ const description = l(modality.seo?.description, locale) ?? l(modality.summary, 
 const jsonLd = [{ '@context': 'https://schema.org', '@type': 'Service', name: title, description, serviceType: title, provider: { '@id': `${Astro.site}#business` }, areaServed: ['Mauritius', 'Online'] }];
 ---
 <Base title={`${title} in Mauritius`} description={description} locale={locale} jsonLd={jsonLd}>
-  <article class="wrap section-tight modality">
-    <p class="eyebrow"><a href={localePath('/modalities', locale)} style="text-decoration:none">{t.nav.modalities}</a></p>
-    <h1>{title}</h1>
-    <p class="muted" style="margin-top:0.75rem">{[where, dur].filter(Boolean).join(', ')}</p>
-    {l(modality.summary, locale) && <p class="lede" style="margin-top:1.25rem">{l(modality.summary, locale)}</p>}
-    <Photo photo={photo} sizes="(min-width: 52rem) 42rem, 100vw" class="modality-photo" aspect="3/2" />
-    <Prose blocks={l(modality.body, locale)} class="modality-body" />
-    <div class="actions">
-      <a class="btn" href={settings.calendlyUrl ?? localePath('/contact', locale)}>{price ? fill(t.cta.bookWithPrice, { price }) : t.cta.book}</a>
-      {post && <a class="quiet" href={localePath(`/blog/${post.slug.current}`, locale)}>{l(post.title, locale)}</a>}
+  <article>
+    <header class="wrap page-head modality">
+      <p class="eyebrow"><a href={localePath('/modalities', locale)} style="text-decoration:none">{t.nav.modalities}</a></p>
+      <h1>{title}</h1>
+      <p class="muted" style="margin-top:0.75rem">{[where, dur].filter(Boolean).join(', ')}</p>
+      {l(modality.summary, locale) && <p class="lede">{l(modality.summary, locale)}</p>}
+    </header>
+    <div class="light">
+      <div class="wrap section-tight modality">
+        <Photo photo={photo} sizes="(min-width: 52rem) 42rem, 100vw" class="modality-photo" aspect="3/2" />
+        <Prose blocks={l(modality.body, locale)} class="modality-body" />
+        <div class="actions">
+          <a class="btn" href={settings.calendlyUrl ?? localePath('/contact', locale)}>{price ? fill(t.cta.bookWithPrice, { price }) : t.cta.book}</a>
+          {post && <a class="quiet" href={localePath(`/blog/${post.slug.current}`, locale)}>{l(post.title, locale)}</a>}
+        </div>
+      </div>
     </div>
   </article>
 </Base>
 <style>
-  .modality { max-width: calc(var(--measure) + 2 * var(--gutter)); }
-  .modality :global(.modality-photo) { margin-top: 2rem; }
+  .modality { max-width: calc(var(--measure) + 2 * var(--gutter)); margin-inline: auto; }
   .modality :global(.modality-body) { margin-top: 2rem; }
 </style>

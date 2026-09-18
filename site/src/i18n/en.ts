@@ -90,6 +90,7 @@ export const en = {
     backHome: 'Back to the home page',
   },
   faq: {
+    stillAsking: 'Still have a question?',
     topics: {
       about: 'About the work',
       sessions: 'Sessions and what to expect',

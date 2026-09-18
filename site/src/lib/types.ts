@@ -83,8 +83,8 @@ export interface HomePage {
   _type: 'homePage';
   heroHeading?: LocaleString; heroLede?: LocaleText; heroImage?: Photo; credentialsLine?: LocaleText;
   statement?: LocaleText; originMeaning?: LocaleText;
-  whoHeading?: LocaleString; whoBody?: LocaleBlock; whoImage?: Photo; trainingHeading?: LocaleString;
-  moonHeading?: LocaleString; moonBody?: LocaleText; closingHeading?: LocaleString; closingBody?: LocaleText; seo?: Seo;
+  whoHeading?: LocaleString; whoBody?: LocaleBlock; quoteImage?: Photo; trainingHeading?: LocaleString;
+  moonHeading?: LocaleString; moonBody?: LocaleText; closingHeading?: LocaleString; closingBody?: LocaleText; closingImage?: Photo; seo?: Seo;
 }
 export interface AboutPage {
   _type: 'aboutPage';

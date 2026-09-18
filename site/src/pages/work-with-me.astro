@@ -15,12 +15,13 @@ const photos = await Promise.all(main.map((s) => resolvePhoto(s.image)));
 const jsonLd = main.map((s) => serviceSchema(s, locale));
 ---
 <Base title={l(page.title, locale) ?? t.nav.work} description={l(page.seo?.description, locale) ?? l(page.intro, locale)} locale={locale} jsonLd={jsonLd}>
-  <section class="wrap section-tight">
+  <section class="wrap page-head">
     <h1>{l(page.title, locale)}</h1>
-    {l(page.intro, locale) && <p class="lede" style="margin-top:1.5rem">{l(page.intro, locale)}</p>}
+    {l(page.intro, locale) && <p class="lede">{l(page.intro, locale)}</p>}
     <Prose blocks={l(page.body, locale)} />
   </section>
 
+  <div class="light">
   {main.map((s, i) => (
     <section class={`wrap section split ${i % 2 ? 'split-reverse' : ''}`}>
       {i % 2 === 0 ? (
@@ -36,8 +37,9 @@ const jsonLd = main.map((s) => serviceSchema(s, locale));
       )}
     </section>
   ))}
+  </div>
 
-  <section class="band-sand section">
+  <section class="section">
     <div class="wrap">
       <h2>{t.home.ingredientsHeading}</h2>
       <p class="measure" style="margin-top:1rem">{t.home.ingredientsNote}</p>
@@ -53,7 +55,7 @@ const jsonLd = main.map((s) => serviceSchema(s, locale));
   </section>
 
   {l(settings.cancellationPolicy, locale) && (
-    <section class="wrap section-tight">
+    <section class="wrap section-tight" style="border-top:1px solid var(--line)">
       <p class="measure muted"><strong>Cancellations.</strong> {l(settings.cancellationPolicy, locale)}</p>
     </section>
   )}
@@ -65,4 +67,5 @@ const jsonLd = main.map((s) => serviceSchema(s, locale));
   .modality-list h3 a { text-decoration: none; }
   .modality-list h3 a:hover { text-decoration: underline; text-decoration-color: var(--terracotta); }
   .modality-list p { margin-top: 0.5rem; font-size: 1rem; }
+  .modality-list h3 { color: var(--heading); }
 </style>
