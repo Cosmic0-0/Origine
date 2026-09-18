@@ -43,6 +43,18 @@ cp .env.example .env        # needs SANITY_STUDIO_PROJECT_ID
 npm run dev                 # http://localhost:3333
 ```
 
+## Tests
+
+```bash
+cd site
+npm test                    # the price, duration and date formats
+npm run test:e2e            # builds, then opens every page in a 320px browser
+```
+
+The browser checks walk every page in `site/dist`: one `h1`, alt text on every image, nothing that makes
+the page scroll sideways on the narrowest phone, and the phone menu opening and closing. A new page is
+picked up on its own. On a new machine Playwright needs its browser once: `npx playwright install chromium`.
+
 ## Deploying for the first time
 
 All accounts are created under Stephanie's email so she owns them. Everything below is on a free tier.

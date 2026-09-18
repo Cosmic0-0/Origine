@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "test": "vitest run",
+    "test:e2e": "npm run build && playwright test"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
@@ -16,5 +18,9 @@
     "astro": "^7.3.3",
     "sharp": "^0.35.4",
     "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "vitest": "^5.0.1"
   }
 }
