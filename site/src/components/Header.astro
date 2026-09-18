@@ -33,3 +33,19 @@ const book = settings.calendlyUrl ?? localePath('/contact', locale);
     <a class="btn" href={book}><span class="label-long">{t.nav.book}</span><span class="label-short">{t.nav.bookShort}</span></a>
   </nav>
 </header>
+
+<script>
+  // A <details> menu stays open until you click its summary again. Close it the way people expect.
+  const menu = document.querySelector<HTMLDetailsElement>('.site-header .menu');
+  if (menu) {
+    document.addEventListener('click', (event) => {
+      if (menu.open && !menu.contains(event.target as Node)) menu.open = false;
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && menu.open) {
+        menu.open = false;
+        menu.querySelector('summary')?.focus();
+      }
+    });
+  }
+</script>
