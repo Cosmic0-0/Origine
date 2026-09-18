@@ -13,7 +13,7 @@ const portrait = await resolvePhoto(about.portrait);
 const sections = await Promise.all((about.sections ?? []).map(async (s) => ({ ...s, photo: await resolvePhoto(s.image) })));
 const jsonLd = [{
   '@context': 'https://schema.org', '@type': 'Person', name: settings.practitionerName ?? 'Stephanie Maurel', jobTitle: 'Embodied healing practitioner',
-  worksFor: { '@id': `${abs('/')}#business` }, url: abs('/about'), sameAs: [settings.instagramUrl, settings.facebookUrl, settings.youtubeUrl].filter(Boolean),
+  worksFor: { '@id': `${abs('/')}#business` }, url: abs('/about/'), sameAs: [settings.instagramUrl, settings.facebookUrl, settings.youtubeUrl].filter(Boolean),
   knowsAbout: (about.training ?? []).map((i) => l(i.label, locale)).filter(Boolean),
 }];
 ---

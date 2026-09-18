@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /thank-you
+Disallow: /thank-you/
 
 Sitemap: https://www.originehealing.com/sitemap-index.xml

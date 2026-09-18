@@ -25,7 +25,7 @@ const moonDuration = formatDuration(moonlight?.durationMinutes?.min, moonlight?.
 const bookHref = settings.calendlyUrl ?? localePath('/contact', locale);
 const bookLabel = singlePrice ? fill(t.cta.bookWithPrice, { price: singlePrice }) : t.cta.book;
 const [hero, quotePhoto, closingPhoto] = await Promise.all([resolvePhoto(home.heroImage), resolvePhoto(home.quoteImage), resolvePhoto(home.closingImage)]);
-const jsonLd = [await localBusiness(settings, locale), ...featured.map((s) => serviceSchema(s, locale))];
+const jsonLd = [await localBusiness(settings, locale, services), ...featured.map((s) => serviceSchema(s, locale))];
 ---
 <Base title={t.meta.homeTitle} description={l(home.heroLede, locale)} locale={locale} jsonLd={jsonLd} bodyClass="page-home">
   <section class="hero">
@@ -91,7 +91,7 @@ const jsonLd = [await localBusiness(settings, locale), ...featured.map((s) => se
           <p class="where muted">{[l(nextMoon.location, locale), moonPrice, moonDuration].filter(Boolean).join('. ')}</p>
         </>
       ) : (
-        <p class="where muted">{t.events.none}</p>
+        <p class="where muted">{t.events.noneHome}</p>
       )}
       <p class="desc">{l(home.moonBody, locale)}</p>
       <div class="actions">

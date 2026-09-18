@@ -1,0 +1,17 @@
+# Rebuilds the site every night so event dates that have passed drop off, even when nothing was published.
+# Needs a repository secret NETLIFY_BUILD_HOOK containing the Netlify build-hook URL.
+name: Nightly rebuild
+
+on:
+  schedule:
+    - cron: '15 1 * * *'   # 01:15 UTC, 05:15 in Mauritius
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the Netlify build hook
+        run: |
+          if [ -z "${{ secrets.NETLIFY_BUILD_HOOK }}" ]; then echo "NETLIFY_BUILD_HOOK secret is not set"; exit 1; fi
+          curl -fsS -X POST -d '{}' "${{ secrets.NETLIFY_BUILD_HOOK }}"

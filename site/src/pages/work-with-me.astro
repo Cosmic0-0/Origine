@@ -56,7 +56,7 @@ const jsonLd = main.map((s) => serviceSchema(s, locale));
 
   {l(settings.cancellationPolicy, locale) && (
     <section class="wrap section-tight" style="border-top:1px solid var(--line)">
-      <p class="measure muted"><strong>Cancellations.</strong> {l(settings.cancellationPolicy, locale)}</p>
+      <p class="measure muted"><strong>{t.offer.cancellations}</strong> {l(settings.cancellationPolicy, locale)}</p>
     </section>
   )}
 </Base>

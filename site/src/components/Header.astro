@@ -13,8 +13,9 @@ const items = [
   { href: '/blog', label: t.nav.blog },
   { href: '/contact', label: t.nav.contact },
 ].map((i) => ({ ...i, href: localePath(i.href, locale) }));
-const current = Astro.url.pathname.replace(/\/$/, '') || '/';
-const isCurrent = (href: string) => (href === '/' ? current === '/' : current.startsWith(href));
+const strip = (p: string) => p.replace(/\/+$/, '') || '/';
+const current = strip(Astro.url.pathname);
+const isCurrent = (href: string) => { const h = strip(href); return h === '/' ? current === '/' : current === h || current.startsWith(`${h}/`); };
 const book = settings.calendlyUrl ?? localePath('/contact', locale);
 ---
 <header class="site-header">
@@ -29,6 +30,6 @@ const book = settings.calendlyUrl ?? localePath('/contact', locale);
         {items.map((i) => <li><a href={i.href} aria-current={isCurrent(i.href) ? 'page' : undefined}>{i.label}</a></li>)}
       </ul>
     </details>
-    <a class="btn" href={book}>{t.nav.book}</a>
+    <a class="btn" href={book}><span class="label-long">{t.nav.book}</span><span class="label-short">{t.nav.bookShort}</span></a>
   </nav>
 </header>

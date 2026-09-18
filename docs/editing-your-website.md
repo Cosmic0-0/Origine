@@ -55,7 +55,7 @@ write in "The post". The text box works like a simple word processor: highlight 
 italic, use the dropdown for headings, and the plus in the margin to add a photo. Publish when done.
 
 **Add a client quote.** Client quotes → plus → paste what they said, add the name they agreed to.
-Turn on "Show on the home page" if you want it there. Two are shown on the home page at a time.
+Turn on "Show on the home page" if you want it there. The first one with that switched on is the quote shown on the home page; the rest appear on the Work with me page.
 
 **Change your email, WhatsApp or Calendly link.** Contact details and links → edit → Publish.
 

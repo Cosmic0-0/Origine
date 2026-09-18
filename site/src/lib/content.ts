@@ -18,7 +18,8 @@ interface Store { docs: Map<string, AnyDoc & { _id: string }>; assets: Map<strin
 let storePromise: Promise<Store> | null = null;
 
 async function loadFromSanity(): Promise<Store> {
-  const client = createClient({ projectId: projectId!, dataset, apiVersion: '2026-01-01', useCdn: true, perspective: 'published' });
+  // useCdn is off on purpose: a build triggered by the publish webhook must read the fresh document, not a cached copy.
+  const client = createClient({ projectId: projectId!, dataset, apiVersion: '2026-01-01', useCdn: false, perspective: 'published' });
   const [docs, assets] = await Promise.all([
     client.fetch<(AnyDoc & { _id: string })[]>(`*[_type in $types]`, { types: documentTypes }),
     client.fetch<ImageAsset[]>(`*[_type == "sanity.imageAsset"]{_id, url, metadata{dimensions, lqip}}`),
@@ -67,7 +68,7 @@ export async function getTestimonials(): Promise<Testimonial[]> { return ofType<
 export async function getEvents(opts: { upcoming?: boolean } = {}): Promise<Event[]> {
   const all = ofType<Event>(await getStore(), 'event').sort((a, b) => a.start.localeCompare(b.start));
   if (!opts.upcoming) return all;
-  // Keep an event visible until the end of the day it ends, Mauritius time.
+  // Keep an event visible for twelve hours after it ends, so an evening event is still listed the next morning.
   const cutoff = Date.now() - 12 * 3600 * 1000;
   return all.filter((e) => new Date(e.end ?? e.start).getTime() >= cutoff);
 }
@@ -95,6 +96,7 @@ export async function resolvePhoto(photo: Photo | null | undefined): Promise<Res
     if (asset?.metadata?.dimensions) {
       return { src: asset.url, width: asset.metadata.dimensions.width, height: asset.metadata.dimensions.height, alt, position, lqip: asset.metadata.lqip };
     }
+    console.warn(`[content] photo asset ${photo.asset._ref} not found or has no dimensions; it will not render`);
   }
   if (photo._sanityAsset) {
     const name = photo._sanityAsset.replace(/^image@file:\/\//, '').replace(/^\.?\/?images\//, '');

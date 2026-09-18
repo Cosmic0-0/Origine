@@ -33,9 +33,9 @@ export function formatEventDate(startIso: string, endIso: string | null | undefi
   const day = new Intl.DateTimeFormat(intlLocale[locale], { timeZone: 'Indian/Mauritius', weekday: 'long', day: 'numeric', month: 'long' });
   const time = new Intl.DateTimeFormat(intlLocale[locale], { timeZone: 'Indian/Mauritius', hour: 'numeric', minute: '2-digit', hour12: locale === 'en' });
   const multiDay = end && end.toDateString() !== start.toDateString();
-  if (multiDay) {
-    const endDay = new Intl.DateTimeFormat(intlLocale[locale], { timeZone: 'Indian/Mauritius', day: 'numeric', month: 'long' });
-    return `${day.format(start)} to ${endDay.format(end)}`;
-  }
-  return `${day.format(start)}, ${time.format(start).replace(':00', '').replace(/\s?(am|pm)$/i, (m) => m.trim().toLowerCase())}`;
+  if (multiDay) return day.formatRange(start, end);
+  const hour12 = locale === 'en';
+  let clock = time.format(start);
+  if (hour12) clock = clock.replace(':00', '').replace(/\s?(am|pm)$/i, (m) => m.trim().toLowerCase());
+  return `${day.format(start)}, ${clock}`;
 }

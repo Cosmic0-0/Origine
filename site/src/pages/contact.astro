@@ -25,12 +25,12 @@ const wa = settings.whatsapp ? `https://wa.me/${settings.whatsapp.replace(/\D/g,
     </div>
     <aside class="contact-aside">
       <div class="contact-block">
-        <h2>{t.cta.book}</h2>
-        <p>Sessions are booked straight into my calendar.</p>
+        <h2>{t.contact.bookHeading}</h2>
+        <p>{t.contact.bookNote}</p>
         <a class="btn" href={settings.calendlyUrl ?? '#'}>{t.cta.book}</a>
       </div>
       <div class="contact-block">
-        <h2>Quickest</h2>
+        <h2>{t.contact.quickest}</h2>
         {wa && <p><a href={wa} rel="noopener">WhatsApp {settings.whatsapp}</a></p>}
         {settings.email && <p><a href={`mailto:${settings.email}`}>{settings.email}</a></p>}
         {l(settings.replyPromise, locale) && <p class="muted small">{l(settings.replyPromise, locale)}</p>}
@@ -39,7 +39,7 @@ const wa = settings.whatsapp ? `https://wa.me/${settings.whatsapp.replace(/\D/g,
         <div class="contact-block">
           <h2>{t.footer.location}</h2>
           <p>{a.venue}{a.street && <><br />{a.street}</>}<br />{[a.town, a.country].filter(Boolean).join(', ')}</p>
-          {a.mapUrl && <p><a class="quiet" href={a.mapUrl} rel="noopener">Open in Google Maps</a></p>}
+          {a.mapUrl && <p><a class="quiet" href={a.mapUrl} rel="noopener">{t.contact.openMap}</a></p>}
           {l(a.directions, locale) && <p class="muted small">{l(a.directions, locale)}</p>}
         </div>
       )}

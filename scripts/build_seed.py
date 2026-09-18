@@ -5,8 +5,9 @@ The same file is imported into Sanity with `sanity dataset import` on first depl
 content lives in exactly one place. Images are referenced as image@file:// paths relative
 to this file; the local build resolves them from src/seed/images and the import uploads them.
 """
-import json, sys, os, re
+import json, sys, os, re, random
 from datetime import datetime, timezone
+random.seed('origine-seed-2026')  # stable _key values, so re-running only changes what actually changed
 sys.path.insert(0, os.path.dirname(__file__))
 from html_to_portable_text import convert, from_text, key
 
@@ -239,6 +240,9 @@ if SCRATCH:
         html = item['a_html']
         # Squarespace "Get Started" page no longer exists: point those links at the new pages.
         html = html.replace('/get-started', '/work-with-me').replace('/faq-1', '/faq')
+        html = html.replace('Contact</a> or <a href="/work-with-me">Get Started</a> pages', 'Contact</a> page')
+        html = re.sub(r'the link on the\s*<a href="/work-with-me">\s*Get Started\s*</a>\s*page', 'the <a href="/work-with-me">Work with me</a> page', html)
+        html = html.replace('Get Started', 'Work with me')
         blocks = convert(html)
         docs.append({'_id': f'faq-{order}', '_type': 'faqEntry', 'question': L(q), 'answer': LB(blocks), 'topic': faq_topics.get(q, 'about'), 'order': order})
 

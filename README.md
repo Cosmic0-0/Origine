@@ -11,7 +11,7 @@ Replaces the Squarespace site at originehealing.com.
 
 ## How it fits together
 
-Content lives in Sanity. The site is built statically at deploy time: Astro fetches every document once,
+Content lives in Sanity. The site is built statically at deploy time: Astro fetches every document once (straight from the API, not the CDN, so a rebuild right after Publish never reads a stale copy),
 renders HTML, optimises images into WebP at several sizes, self-hosts the fonts, and Netlify serves the
 result. No JavaScript talks to Sanity in the browser, and the site reads fully without JavaScript.
 
@@ -31,7 +31,7 @@ npm install
 cp .env.example .env        # leave PUBLIC_SANITY_PROJECT_ID empty to use the seed content
 npm run dev                 # http://localhost:4321
 npm run build               # type check + production build into site/dist
-npm run preview             # serve the production build
+npm run preview             # serve the production build (Astro 7 keeps this running in the background; stop it with: npx astro preview stop)
 ```
 
 Studio:
@@ -51,12 +51,16 @@ All accounts are created under Stephanie's email so she owns them. Everything be
 
 1. Sign in at sanity.io/manage and create a project called "Origine Healing" with a dataset called `production` (public).
 2. Copy the project ID into `studio/.env` and `site/.env`.
-3. Import the migrated content, with the images:
+3. Import the migrated content, with the images. Run it from the studio folder, which has the Sanity CLI
+   and the project ID in its `.env`:
    ```bash
-   cd site/src/seed
-   npx --prefix ../../../studio sanity dataset import seed.ndjson production --replace
+   cd studio
+   npx sanity dataset import ../site/src/seed/seed.ndjson production --replace
    ```
-   Run it from the seed folder so the `image@file://./images/...` paths resolve.
+   The CLI resolves the `image@file://./images/...` paths relative to the ndjson file. If any asset fails
+   to upload, run the same command from `site/src/seed` using `../../../studio/node_modules/.bin/sanity`.
+   After the import, check every page on the first Netlify build: a photo that did not upload logs a
+   `[content] photo asset ... not found` warning in the build output and is left out of the page.
 4. Deploy the Studio: `cd studio && npm run deploy`. It goes live at `https://origine-healing.sanity.studio` (change the name in `sanity.cli.ts` if taken).
 5. Invite Stephanie as an Administrator under Members.
 6. Under API → CORS origins, add `http://localhost:3333` and the Studio URL.
@@ -68,6 +72,9 @@ All accounts are created under Stephanie's email so she owns them. Everything be
 3. Forms → **Enable form detection**, then trigger a deploy. The `enquiry` form appears under Forms after the first build that contains it.
 4. Forms → Form notifications → Add notification → Email, to Stephanie's address. Submissions are also kept in the Netlify dashboard.
 5. Site configuration → Build hooks → add one called "Sanity publish". Copy its URL.
+6. Add the same URL as a GitHub Actions secret named `NETLIFY_BUILD_HOOK` (repository → Settings →
+   Secrets and variables → Actions). `.github/workflows/rebuild.yml` calls it every night so past event
+   dates drop off the site even when nothing has been published.
 
 ### 3. Rebuild on publish
 
@@ -78,6 +85,8 @@ In Sanity manage → API → Webhooks: add a webhook with the Netlify build-hook
 1. Create a free Kit account, make a form (any style; only its address is used).
 2. In the form's Embed → HTML, copy the `action` URL (looks like `https://app.kit.com/forms/123456/subscriptions`) and the `data-uid`.
 3. Paste them into Sanity → Contact details and links → Newsletter fields. Publish.
+4. In the Kit form's settings, under what happens after subscribing, choose "redirect to an external page"
+   and enter `https://www.originehealing.com/thank-you/`, so people land back on the site.
 
 ### 5. Analytics (Cloudflare Web Analytics)
 

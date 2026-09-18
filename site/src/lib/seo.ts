@@ -4,7 +4,7 @@ import type { SiteSettings, Service, Event, Post, FaqEntry } from './types';
 import { resolvePhoto } from './content';
 import { portableTextToPlain } from './portableText';
 
-export const siteUrl = (import.meta.env.PUBLIC_SITE_URL as string | undefined) || 'https://www.originehealing.com';
+export const siteUrl = ((import.meta.env.PUBLIC_SITE_URL as string | undefined) || 'https://www.originehealing.com').replace(/\/+$/, '');
 export const abs = (path: string) => new URL(path, siteUrl).toString();
 
 export async function imageUrl(photo: Parameters<typeof resolvePhoto>[0]): Promise<string | undefined> {
@@ -13,8 +13,11 @@ export async function imageUrl(photo: Parameters<typeof resolvePhoto>[0]): Promi
   return typeof r.src === 'string' ? `${r.src}?w=1200&auto=format` : abs(r.src.src);
 }
 
-export async function localBusiness(settings: SiteSettings, locale: Locale) {
+export async function localBusiness(settings: SiteSettings, locale: Locale, services: Service[] = []) {
   const image = await imageUrl(settings.defaultSeo?.image);
+  const amounts = services.map((s) => s.price?.amount).filter((a): a is number => typeof a === 'number' && a > 0);
+  const fmt = (n: number) => `Rs ${new Intl.NumberFormat('en-GB').format(n)}`;
+  const priceRange = amounts.length ? `${fmt(Math.min(...amounts))} - ${fmt(Math.max(...amounts))}` : undefined;
   return {
     '@context': 'https://schema.org',
     '@type': ['LocalBusiness', 'HealthAndBeautyBusiness'],
@@ -25,13 +28,13 @@ export async function localBusiness(settings: SiteSettings, locale: Locale) {
     image,
     email: settings.email,
     telephone: settings.whatsapp,
-    founder: { '@type': 'Person', name: settings.practitionerName ?? 'Stephanie Maurel', url: abs('/about') },
+    founder: { '@type': 'Person', name: settings.practitionerName ?? 'Stephanie Maurel', url: abs('/about/') },
     address: settings.address
       ? { '@type': 'PostalAddress', streetAddress: [settings.address.venue, settings.address.street].filter(Boolean).join(', '), addressLocality: settings.address.town, addressRegion: settings.address.region, addressCountry: 'MU' }
       : undefined,
     areaServed: ['Mauritius', 'Online'],
     sameAs: [settings.instagramUrl, settings.facebookUrl, settings.youtubeUrl].filter(Boolean),
-    priceRange: 'Rs 1,500 - Rs 44,000',
+    priceRange,
   };
 }
 
@@ -44,9 +47,9 @@ export function serviceSchema(service: Service, locale: Locale) {
     description: l(service.summary, locale),
     provider: { '@id': `${siteUrl}/#business` },
     areaServed: ['Mauritius', 'Online'],
-    url: abs(`/work-with-me#${service.slug.current}`),
+    url: abs(`/work-with-me/#${service.slug.current}`),
     offers: service.price?.amount != null && service.price.amount > 0
-      ? { '@type': 'Offer', price: service.price.amount, priceCurrency: service.price.currency ?? 'MUR', availability: 'https://schema.org/InStock', url: abs(`/work-with-me#${service.slug.current}`) }
+      ? { '@type': 'Offer', price: service.price.amount, priceCurrency: service.price.currency ?? 'MUR', availability: 'https://schema.org/InStock', url: abs(`/work-with-me/#${service.slug.current}`) }
       : undefined,
   };
 }
@@ -62,7 +65,7 @@ export function eventSchema(event: Event, locale: Locale, offerName?: string, pr
     eventStatus: 'https://schema.org/EventScheduled',
     location: { '@type': 'Place', name: l(event.location, locale) ?? 'Domaine de Labourdonnais, Mapou', address: { '@type': 'PostalAddress', addressLocality: 'Mapou', addressCountry: 'MU' } },
     organizer: { '@id': `${siteUrl}/#business` },
-    offers: price?.amount != null ? { '@type': 'Offer', price: price.amount, priceCurrency: price.currency ?? 'MUR', availability: event.soldOut ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock', url: abs('/groups-and-retreats') } : undefined,
+    offers: price?.amount != null ? { '@type': 'Offer', price: price.amount, priceCurrency: price.currency ?? 'MUR', availability: event.soldOut ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock', url: abs('/groups-and-retreats/') } : undefined,
   };
 }
 
@@ -73,10 +76,10 @@ export async function postSchema(post: Post, locale: Locale, author: string) {
     headline: l(post.title, locale),
     description: l(post.excerpt, locale) ?? portableTextToPlain(l(post.body, locale)),
     datePublished: post.publishedAt,
-    author: { '@type': 'Person', name: author, url: abs('/about') },
+    author: { '@type': 'Person', name: author, url: abs('/about/') },
     publisher: { '@id': `${siteUrl}/#business` },
     image: await imageUrl(post.coverImage),
-    mainEntityOfPage: abs(`/blog/${post.slug.current}`),
+    mainEntityOfPage: abs(`/blog/${post.slug.current}/`),
   };
 }
 

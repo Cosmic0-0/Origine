@@ -14,6 +14,7 @@ export const en = {
     menu: 'Menu',
     close: 'Close',
     book: 'Book a session',
+    bookShort: 'Book',
   },
   cta: {
     book: 'Book a session',
@@ -49,6 +50,8 @@ export const en = {
     inPerson: 'In person',
     online: 'Online',
     inPersonAndOnline: 'In person or online',
+    free: 'Free',
+    cancellations: 'Cancellations.',
     includes: 'What is included',
     canInclude: 'Can include',
     notPublished: 'Price on enquiry',
@@ -56,6 +59,7 @@ export const en = {
   events: {
     upcoming: 'Upcoming dates',
     none: 'No dates are booked in just now. Join the list below and you will hear first.',
+    noneHome: 'No dates are booked in just now. Join the list on the Groups and retreats page and you will hear first.',
     soldOut: 'Fully booked',
     spacesLeft: '{n} places left',
     oneSpace: '1 place left',
@@ -68,6 +72,7 @@ export const en = {
     firstNameLabel: 'Your first name',
     button: 'Join the list',
     privacy: 'You can leave the list with one click, any time.',
+    notConfigured: 'The sign-up form appears here once the newsletter address is added under Contact details and links.',
   },
   form: {
     name: 'Your name',
@@ -88,6 +93,12 @@ export const en = {
     thanksHeading: 'Thank you, your message is on its way.',
     thanksBody: 'I reply within one business day. If it is urgent, WhatsApp is quickest.',
     backHome: 'Back to the home page',
+  },
+  contact: {
+    bookHeading: 'Book a session',
+    bookNote: 'Sessions are booked straight into my calendar.',
+    quickest: 'Quickest',
+    openMap: 'Open in Google Maps',
   },
   faq: {
     stillAsking: 'Still have a question?',

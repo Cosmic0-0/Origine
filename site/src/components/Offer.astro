@@ -22,7 +22,7 @@ const includes = (service.includes ?? []).map((i) => l(i, locale)).filter(Boolea
 <article class="offer" id={service.slug.current}>
   <h2>{name}</h2>
   <div class="offer-price">
-    {service.price?.amount === 0 ? <span class="amount">Free</span> : price ? <span class="amount">{price}</span> : <span class="amount amount-none">{priceNote ?? t.offer.notPublished}</span>}
+    {service.price?.amount === 0 ? <span class="amount">{t.offer.free}</span> : price ? <span class="amount">{price}</span> : <span class="amount amount-none">{priceNote ?? t.offer.notPublished}</span>}
     {meta && <span class="meta">{meta}</span>}
     {priceNote && price && <span class="meta">{priceNote}</span>}
   </div>

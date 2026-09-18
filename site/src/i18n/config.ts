@@ -11,8 +11,9 @@ export function l<T>(field: Localised<T> | null | undefined, locale: Locale): T 
   return (field[locale] ?? field[defaultLocale] ?? undefined) as T | undefined;
 }
 
-/** Path for a page in a locale. English lives at the root, other locales are prefixed. */
+/** Path for a page in a locale. English lives at the root, other locales are prefixed. Paths end with a slash to match the build output. */
 export function localePath(path: string, locale: Locale): string {
-  const clean = path.startsWith('/') ? path : `/${path}`;
-  return locale === defaultLocale ? clean : `/${locale}${clean === '/' ? '' : clean}`;
+  let clean = path.startsWith('/') ? path : `/${path}`;
+  if (!clean.endsWith('/')) clean = `${clean}/`;
+  return locale === defaultLocale ? clean : `/${locale}${clean === '/' ? '/' : clean}`;
 }

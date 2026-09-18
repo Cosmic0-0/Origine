@@ -7,8 +7,8 @@ const site = process.env.PUBLIC_SITE_URL || 'https://www.originehealing.com';
 export default defineConfig({
   site,
   output: 'static',
-  trailingSlash: 'never',
-  build: { format: 'file' },
+  trailingSlash: 'always',
+  build: { format: 'directory' },
   compressHTML: true,
   i18n: {
     // English ships now. French is added by creating src/pages/fr/ and filling the fr fields in Sanity.

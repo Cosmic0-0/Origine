@@ -9,6 +9,8 @@ Do these in order. Nothing here is destructive until the last section.
 - [ ] Netlify site connected to the GitHub repo, first deploy green
 - [ ] Netlify form detection enabled, test message sent, email notification received by Stephanie
 - [ ] Netlify build hook created and wired to a Sanity webhook; test by publishing a change
+- [ ] Same build hook saved as the `NETLIFY_BUILD_HOOK` GitHub secret; check the nightly rebuild workflow ran once
+- [ ] Kit form set to redirect to the site's thank-you page after subscribing
 - [ ] Kit account, form created, form URL and UID pasted into Sanity site settings
 - [ ] Cloudflare Web Analytics token in Netlify env vars
 
@@ -18,6 +20,7 @@ Do these in order. Nothing here is destructive until the last section.
 - [ ] Confirm WhatsApp number and Calendly link
 - [ ] Next Moonlight Meditation date entered
 - [ ] Every photo has a description
+- [ ] Every photo renders on the first build from Sanity (no `[content] photo asset` warnings in the Netlify build log)
 - [ ] Prices confirmed
 
 ## Before pointing the domain
